@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <meta property="og:title" content="STech" >
+    <meta property="og:description" content="Hi-end PC & Gaming Gears">
+    <meta property="og:image" content="https://lhswebstorage.blob.core.windows.net/stechweb/logo/stech-logo-text-color.png">
+
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" 
+          integrity="sha512-UtLOu9C7NuThQhuXXrGwx9Jb/z9zPQJctuAgNUBK3Z6kkSYT9wJ+2+dh6klS+TDBCV9kNPBbAxbVD+vCcfGPaA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" type="text/css" href="~/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/home.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/product.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/collections.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/cart.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/account.css" />
+    <link rel="stylesheet" type="text/css" href="~/css/order.css" />
+
+    @RenderSection("Styles", required: false)
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+
+</head>
+<body>
+
+    @await Component.InvokeAsync("Header", "subheader")
+
+
+    <main>
+        <div class="hidden-menu">
+            <div class="container-xxl hidden-menu-box">
+                <section class="menu">
+                    @await Component.InvokeAsync("Menu")
+                </section>
+            </div>
+        </div>
+        <div class="container-xxl">
+
+            @RenderBody()
+        </div>
+    </main>
+
+    @await Component.InvokeAsync("Footer")
+    @await Html.PartialAsync("PartialViews/MobileSidebar")
+    @await Html.PartialAsync("PartialViews/BottomNavigation")
+    @await Html.PartialAsync("PartialViews/HiddenContents")
+
+    @if(User.Identity == null || !User.Identity.IsAuthenticated)
+    {
+        @await Html.PartialAsync("PartialViews/Form_Login", new LoginVM())
+        @await Html.PartialAsync("PartialViews/Form_Register", new RegisterVM())
+    }
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
+            integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"
+            integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js" 
+            integrity="sha512-JyCZjCOZoyeQZSd5+YEAcFgz2fowJ1F1hyJOXgtKu4llIa0KneLcidn5bwfutiehUTiOuK87A986BZJMko0eWQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="@("https://unpkg.com/@popperjs/core@2")"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+
+
+    <script type="text/javascript" src="~/js/script.js"></script>
+    <script type="text/javascript" src="~/js/address.js"></script>
+    <script type="text/javascript" src="~/js/cart.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

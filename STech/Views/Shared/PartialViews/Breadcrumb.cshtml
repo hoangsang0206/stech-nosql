@@ -1,0 +1,26 @@
+﻿@model List<Breadcrumb>
+
+<section class="breadcrumb">
+    <ul class="breadcrumb-list d-flex">
+        <li class="breadcrumb-item">
+            <a href="/">
+                Trang chủ
+            </a>
+        </li>
+        @foreach (Breadcrumb br in Model)
+        {
+            <li class="breadcrumb-item">
+                @if (string.IsNullOrEmpty(br.breadcrumbLink))
+                {
+                    <span>@br.breadcrumbName</span>
+                }
+                else
+                {
+                    <a href="@br.breadcrumbLink">
+                        @br.breadcrumbName
+                    </a>
+                }
+            </li>
+        }
+    </ul>
+</section>

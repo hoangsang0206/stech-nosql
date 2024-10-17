@@ -1,0 +1,71 @@
+﻿@model CustomerVM
+
+<div class="form-container add-customer">
+    <div class="form-box" style="width: 35rem">
+        <div class="form-header-wrapper">
+            <div class="form-header">Thêm khách hàng</div>
+            <div class="close-form">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <form>
+            <div>
+                <div class="form-group-header">Thông tin khách hàng</div>
+                <div>
+                    <div>
+                        <div class="form-input-box">
+                            <input asp-for="@Model.CustomerName" class="form-input" />
+                            <label class="input-label">Họ tên</label>
+                        </div>
+                        <span asp-validation-for="@Model.CustomerName"></span>
+                    </div>
+                    <div>
+                        <div class="form-input-box">
+                            <input asp-for="@Model.Phone" class="form-input" />
+                            <label class="input-label">Số điện thoại</label>
+                        </div>
+                        <span asp-validation-for="@Model.Phone"></span>
+                    </div>
+                    <div>
+                        <div class="form-input-box">
+                            <input asp-for="@Model.Email" class="form-input" />
+                            <label class="input-label">Địa chỉ Email</label>
+                        </div>
+                        <span asp-validation-for="@Model.Email"></span>
+                    </div>
+                    <div class="d-flex gap-4 mt-3">
+                        <div class="page-radio-input">
+                            <label for="gender-male" class="checked">
+                                <input type="radio" name="Gender" id="gender-male" value="Nam" checked />
+                                <span class="text-black">
+                                    <span style="font-size: 1rem">Nam</span>
+                                </span>
+                            </label>
+                        </div>
+                        <div class="page-radio-input">
+                            <label for="gender-female">
+                                <input type="radio" name="Gender" id="gender-female" value="Nữ" />
+                                <span class="text-black">
+                                    <span style="font-size: 1rem">Nữ</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="form-group-header">Địa chỉ</div>
+                <div>
+                    @await Html.PartialAsync("PartialViews/Form_AddressItems", new AddAddressVM())
+                </div>
+            </div>
+
+            <div class="form-btn-wrapper">
+                <button type="submit" class="form-submit-btn page-btn-sm">Thêm mới</button>
+                <button type="reset" class="form-reset-btn">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>

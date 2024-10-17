@@ -1,0 +1,89 @@
+﻿@{
+    var request = Context.Request;
+    Uri uri = new Uri($"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}");
+    string currentUrl = uri.AbsoluteUri;
+}
+
+<div class="pagination-box d-flex justify-content-center align-items-center">
+    @if (ViewBag.Page > 1)
+    {
+        if (ViewBag.TotalPage > 2)
+        {
+            <button class="pagination-first-page pagination-btn" onclick="window.location.href='@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", "1")'">
+                <img src="~/images/icons/double-chevron-left.png" alt="" class="pagination-icon" />
+            </button>
+        }
+
+        <button class="pagination-previous pagination-btn" onclick="window.location.href='@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", Convert.ToString(ViewBag.Page - 1))'">
+            <img src="~/images/icons/chevron-left.png" alt="" class="pagination-icon" />
+        </button>
+    }
+
+    <ul class="pagination d-flex align-items-center p-0 m-0">
+        @if (ViewBag.TotalPage > 1)
+        {
+            if (ViewBag.TotalPage <= 3)
+            {
+                for (int i = 1; i <= ViewBag.TotalPage; i++)
+                {
+                    <li class="pagination-item @(i == ViewBag.Page ? "active" : "")">
+                        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", Convert.ToString(i))">@i</a>
+                    </li>
+                }
+            }
+            else
+            {
+                int startPage = ViewBag.Page - 1;
+                int endPage = ViewBag.Page + 1;
+
+
+                if (startPage > 1)
+                {
+                    <li class="mx-2">
+                        <span>...</span>
+                    </li>
+                }
+
+                if (ViewBag.Page <= 1)
+                {
+                    startPage = 1;
+                    endPage = 3;
+                }
+                else if (ViewBag.Page >= ViewBag.TotalPage)
+                {
+                    startPage = ViewBag.TotalPage - 2;
+                    endPage = ViewBag.TotalPage;
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="pagination-item @(i == ViewBag.Page ? "active" : "")">
+                        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", Convert.ToString(i))">@i</a>
+                    </li>
+                }
+
+                if (endPage < ViewBag.TotalPage)
+                {
+                    <li class="mx-2">
+                        <span>...</span>
+                    </li>
+                }
+            }
+        }
+    </ul>
+
+    @if (ViewBag.Page < ViewBag.TotalPage)
+    {
+        <button class="pagination-next pagination-btn" onclick="window.location.href='@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", Convert.ToString(ViewBag.Page + 1))'">
+            <img src="~/images/icons/chevron-right.png" alt="" class="pagination-icon" />
+        </button>
+
+        if (ViewBag.TotalPage > 2)
+        {
+            <button class="pagination-last-page pagination-btn" onclick="window.location.href='@UrlHelper.AddOrUpdateQueryParam(currentUrl, "page", Convert.ToString(ViewBag.TotalPage))'">
+                <img src="~/images/icons/double-chevron-right.png" alt="" class="pagination-icon" />
+            </button>
+        }
+    }
+
+</div>

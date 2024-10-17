@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết đơn hàng - STech";
+}
+
+ @model Tuple<InvoiceMVM?, IEnumerable<Breadcrumb>>
+
+@await Html.PartialAsync("PartialViews/Breadcrumb", Model.Item2)
+
+<section class="page-container-padding">
+    @await Html.PartialAsync("PartialViews/Order_OrderDetail", Model.Item1)
+</section>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/order.js"></script>
+}

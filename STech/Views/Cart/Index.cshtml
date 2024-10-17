@@ -1,0 +1,192 @@
+﻿@model Tuple<IEnumerable<CartMVM>, IEnumerable<Breadcrumb>>
+
+@{
+    ViewData["Title"] = "Giỏ hàng - STech";
+}
+
+@await Html.PartialAsync("Partialviews/Breadcrumb", Model.Item2)
+
+<section class="cart-page">
+        @if (Model.Item1.Count() > 0)
+        {
+            decimal totalPrice = 0;
+
+            <div class="row m-0 p-0">
+                <div class="col-12 col-sm-8 m-0 p-0">
+                    <div class="cart-products">
+                        <div class="row m-0 p-0 pb-3 d-none d-md-flex">
+                            <div class="col-7 col-md-7 fw-bold">Sản phẩm</div>
+                            <div class="col-3 col-md-3 fw-bold ps-3">Số lượng</div>
+                            <div class="col-2 col-md-2 fw-bold text-end">Thành tiền</div>
+                        </div>
+                        @foreach (CartMVM cart in Model.Item1)
+                        {
+                            if (cart.Product == null)
+                            {
+                                continue;
+                            }
+
+                            totalPrice += cart.Product.Price * cart.Quantity;
+
+                            ProductImage pImage = cart.Product.ProductImages.FirstOrDefault() ?? new ProductImage();
+                            string src = pImage.ImageSrc ?? "~/images/no-image.jpg";
+
+                            <div class="row m-0 p-0">
+                                <div class="col-12 col-md-7 ps-0 ps-md-2">
+                                    <div class="cart-product row m-0 p-0">
+                                        <div class="col-2 m-0 p-1 cart-product-image">
+                                            <img class="w-100" src="@src" alt="" />
+                                        </div>
+                                        <div class="col-10 m-0 ps-2 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <a class="cart-product-name" href="/product/@cart.ProductId">
+                                                    <h6>@cart.Product.ProductName</h6>
+                                                </a>
+                                            </div>
+                                            <div class="mt-2 d-flex align-items-center justify-content-between">
+                                                <span class="cart-product-price">@(CurrencyFormatter.Format(cart.Product.Price))</span>
+                                                <div class="ps-3 d-flex d-md-none gap-3 align-items-center">
+                                                    <div class="cart-product-quantity d-flex">
+                                                        <button type="button" class="update-quantity decrease-qty"
+                                                                data-product="@cart.ProductId" data-update="minus">
+                                                            <i class="fa-solid fa-minus"></i>
+                                                        </button>
+                                                        <input type="number" name="quantity" value="@cart.Quantity" data-product="@cart.ProductId" min="1" />
+                                                        <button type="button" class="update-quantity increase-qty"
+                                                                data-product="@cart.ProductId" data-update="plus">
+                                                            <i class="fa-solid fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                    <a class="delete-cart-item" href="/cart/delete?id=@cart.ProductId">
+                                                        <i class="fa-regular fa-trash-can"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-md-3 ps-3 d-none d-md-flex gap-3 align-items-center">
+                                    <div class="cart-product-quantity d-flex">
+                                        <button type="button" class="update-quantity decrease-qty"
+                                                data-product="@cart.ProductId" data-update="minus">
+                                            <i class="fa-solid fa-minus"></i>
+                                        </button>
+                                        <input type="number" name="quantity" value="@cart.Quantity" data-product="@cart.ProductId" min="1" />
+                                        <button type="button" class="update-quantity increase-qty"
+                                                data-product="@cart.ProductId" data-update="plus">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <a class="delete-cart-item" href="/cart/delete?id=@cart.ProductId">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </a>
+                                </div>
+                                <div class="col-2 col-md-2 d-none d-md-block text-end">
+                                    <p class="cart-product-total-price fw-bold" style="font-size: 1.05rem" data-product="@cart.ProductId">@(CurrencyFormatter.Format(cart.Product.Price * cart.Quantity))</p>
+                                </div>
+                            </div>
+                            <hr class="mx-2" />
+                        }
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4 ps-0 ps-sm-3">
+                    <div>
+                        <div class="cart-summary-box cart-shipping-fee">
+                            <h5>Phí vận chuyển</h5>
+                            <form>
+                                <div>
+                                    <div class="form-input-box">
+                                        <select class="form-input city-select" id="city-select">
+                                            @await Component.InvokeAsync("SelectOptions")
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-input-box">
+                                        <select class="form-input district-select" id="district-select">
+                                            <option value="" selected>Chọn quận/huyện</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-input-box">
+                                        <select class="form-input ward-select" id="ward-select">
+                                            <option value="" selected>Chọn xã/phường</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <span>Phí vận chuyển dự kiến:</span>
+                                    <span class="fw-bold" id="estimated-shipping-fee">0</span>
+                                </div>
+
+                                <button type="submit" class="form-submit-btn">Tính phí vận chuyển</button>
+                                <small>Phí vận chuyển sẽ không được tính nếu nhận hàng tại showroom</small>
+                            </form>
+                        </div>
+
+                        <div class="cart-summary-box cart-total mt-3">
+                            <h5>Tổng tiền</h5>
+                            <div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Tạm tính</span>
+                                    <span id="cart-total-price" data-subtotal="@totalPrice">@CurrencyFormatter.Format(totalPrice)</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Phí vận chuyển</span>
+                                    <span data-shipping-fee="0" id="shipping-fee">0</span>
+                                </div>
+                                <hr />
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Tổng cộng</span>
+                                    <span class="fw-bold" data-total="@totalPrice" id="total-price">@CurrencyFormatter.Format(totalPrice)</span>
+                                </div>
+                            </div>
+
+                            <button class="form-submit-btn cart-buy-action @(User.Identity?.IsAuthenticated == true ? "logged-in" : "not-logged-in")">ĐẶT HÀNG NGAY</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="cart-info">
+                <div class="cart-empty d-flex flex-column align-items-center py-5">
+                    <p>Giỏ hàng của bạn đang trống</p>
+                    <button class="to-home-page-btn" onclick="window.location.href='/collections/all'">
+                        TIẾP TỤC MUA HÀNG
+                    </button>
+                </div>
+            </div>
+        }
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $.ajax({
+                type: 'GET',
+                url: '/api/account/address/default',
+                success: (response) => {
+                    if (response.status) {
+                        const wardCode = response.data.wardCode;
+                        const districtCode = response.data.districtCode;
+                        const cityCode = response.data.provinceCode;
+
+                        const formAddress = $('.cart-shipping-fee form');
+                        formAddress.find('#city-select').val(cityCode);
+                        formAddress.find('#district-select').val(districtCode);
+                        formAddress.find('#ward-select').val(wardCode);
+
+                        loadDistricts(formAddress, cityCode, districtCode);
+                        loadWards(formAddress, districtCode, wardCode);
+
+                        calculateShippingFee('.cart-shipping-fee form', wardCode, districtCode, cityCode);
+                    }
+                }
+            })
+        })
+    </script>
+}

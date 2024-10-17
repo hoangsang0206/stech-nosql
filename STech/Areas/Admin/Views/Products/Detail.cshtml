@@ -1,0 +1,244 @@
+﻿@model Tuple<ProductMVM, IEnumerable<Category>, IEnumerable<Brand>>
+
+@{
+    ProductVM productVM = new ProductVM();
+
+    ProductMVM product = Model.Item1;
+    IEnumerable<Category> categories = Model.Item2;
+    IEnumerable<Brand> brands = Model.Item3;
+
+    ViewData["Title"] = $"Chi tiết sản phẩm - {product.ProductId}";
+    ViewData["PageTitle"] = "Chi tiết sản phẩm";
+
+    int total_qty = product.WarehouseProducts?.Sum(x => x.Quantity) ?? 0;
+
+    string status_badge = "<span class=\"page-badge badge-success\">Còn hàng</span>";
+
+    if (product.IsDeleted == true)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Đã xóa</span>";
+    }
+    else if (!product.IsActive == true)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Chưa kích hoạt</span>";
+    }
+    else if (total_qty <= 0)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Hết hàng</span>";
+    }
+    else if (total_qty <= 5)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Sắp hết hàng</span>";
+    }
+}
+
+<form id="update-product">
+    <div class="row m-0 p-0">
+        <div class="col-12 col-lg-8 p-0">
+            <div class="page-content-box no-border">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="page-content-header">
+                        Thông tin chung
+                    </div>
+
+                    @Html.Raw(status_badge)
+                </div>
+
+                <div class="row p-0 m-0">
+
+                    @await Html.PartialAsync("PartialViews/Product_Infomation", 
+                            new Tuple<ProductMVM?, IEnumerable<Category>, IEnumerable<Brand>>(product, categories, brands))
+
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header d-flex justify-content-between">
+                    Hình ảnh
+
+                    <a href="javascript:" class="page-btn btn-border-only click-upload-image">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Thêm</span>
+                    </a>
+
+                    <input type="file" id="upload-product-images" accept="image/*" multiple hidden />
+                </div>
+
+
+                <div class="display-grid columns-5 align-items-start gap-2 product-images-container">
+                   @foreach(ProductImage image in product.ProductImages)
+                   {
+                        <div class="product-image-box position-relative box-shadow overflow-hidden">
+                            <img src="@image.ImageSrc" alt="" style="width: 100%" data-status="" data-image-id="@image.ImgId" />
+
+                            <a class="click-delete-image" href="javascript:">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </a>
+                        </div>
+                   }
+                </div>
+            </div>
+
+
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Mô tả ngắn
+                </div>
+
+                <div class="position-relative">
+                    <div id="short-description-editor">
+                        @Html.Raw(product.ShortDescription?.Replace("heading-size-large", "ql-size-large")
+                                 .Replace("heading-size-huge", "ql-size-huge")
+                                 .Replace("text-center", "ql-align-center")
+                                 .Replace("text-end", "ql-align-right")
+                                 .Replace("text-justify", "ql-align-justify"))
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Mô tả sản phẩm
+                </div>
+
+                <div class="position-relative">
+                    <div id="description-editor">
+                        @Html.Raw(product.Description?.Replace("heading-size-large", "ql-size-large")
+                                 .Replace("heading-size-huge", "ql-size-huge")
+                                 .Replace("text-center","ql-align-center")
+                                 .Replace("text-end", "ql-align-right")
+                                 .Replace("text-justify", "ql-align-justify"))
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Thông số kỹ thuật
+                </div>
+
+                <div class="product-specs-container">
+                    <div class="row m-0 p-0">
+                        <div class="col-2 p-0 fw-bold">
+                            Tên thông số
+                        </div>
+                        <div class="col-10 p-0 fw-bold">
+                            Giá trị thông số
+                        </div>
+                    </div>
+                    @foreach(ProductSpecification spec in product.ProductSpecifications)
+                    {
+                        <div class="product-spec row m-0 mb-2 p-0">
+                            <div class="col-2 p-0 pe-2">
+                                <div class="page-input">
+                                    <textarea name="spec-name" placeholder="Tên thông số">@spec.SpecName</textarea>
+                                </div>
+                            </div>
+                            <div class="col-9 p-0">
+                                <div class="page-input">
+                                    <textarea name="spec-value" placeholder="Giá trị thông số">@spec.SpecValue</textarea>
+                                </div>
+                            </div>
+                            <div class="col-1 p-0 d-flex align-items-center justify-content-end">
+                                <a href="javascript:" class="click-delete-spec">
+                                    <i class="fa-regular fa-trash-can" style="font-size: 1.2rem; color: #e30019"></i>
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="mt-3">
+                    <a href="javascript:" class="page-btn btn-border-only click-add-spec">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Thêm thông số</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border d-flex justify-content-end mt-3">
+                <div class="flex-grow-1 d-flex gap-2 align-items-center">
+                    @if(product.IsDeleted == true)
+                    {
+                        <a href="javascript:" class="page-btn btn-lightblue click-restore-product" data-product="@product.ProductId">
+                            <i class="fa-solid fa-trash-can-arrow-up"></i>
+                            <span>Khôi phục sản phẩm</span>
+                        </a>
+                    } 
+                    else
+                    {
+                        <a href="javascript:" class="page-btn btn-red click-delete-product" data-product="@product.ProductId">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Xóa sản phẩm</span>
+                        </a>
+
+                        @if (product.IsActive != true)
+                        {
+                            <a href="javascript:" class="page-btn btn-green click-activate-product" data-product="@product.ProductId">
+                                <i class="fa-regular fa-circle-check"></i>
+                                <span>Kích hoạt sản phẩm</span>
+                            </a>
+                        } 
+                        else
+                        {
+                            <a href="javascript:" class="page-btn btn-blue click-deactivate-product" data-product="@product.ProductId">
+                                <i class="fa-regular fa-circle-xmark"></i>
+                                <span>Hủy kích hoạt sản phẩm</span>
+                            </a>
+                        }
+                    }
+                </div>
+                <button type="submit" class="form-submit-btn page-btn-sm btn-green">Lưu thay đổi</button>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-lg-4 p-0 ps-lg-4">
+            
+            <div class="position-sticky top-0 start-0 mt-3 mt-lg-0">
+                <div class="page-content-box no-border">
+                    <div class="page-content-header">
+                        Chi tiết tồn kho
+                    </div>
+
+                    <span>Quản lý tồn kho ở <a href="/admin/warehouse/product/@product.ProductId">đây</a></span>
+
+
+
+                </div>
+
+                <div class="page-content-box no-border mt-3">
+                    <div class="page-content-header">
+                        Đánh giá sản phẩm
+                    </div>
+
+                    <div>
+                    </div>
+
+                    <span>Quản lý đánh giá sản phẩm ở <a href="/admin/reviews/product/@product.ProductId">đây</a></span>
+
+                </div>
+
+                <div class="page-content-box no-border mt-3">
+                    <div class="page-content-header">
+                        Nhóm sản phẩm
+                    </div>
+
+                    <span>Chức năng đang cập nhật...</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</form>
+
+@section Styles {
+    <link type="text/css" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/admin/css/product.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="~/admin/js/product.js"></script>
+}

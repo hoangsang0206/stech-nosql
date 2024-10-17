@@ -1,0 +1,12 @@
+﻿@model int //rating
+
+<div class="rating-star-group">
+    @for (int i = 1; i <= Model; i++)
+    {
+        <i class="fa-solid fa-star"></i>
+    }
+    @for (int i = 1; i <= 5 - Model; i++)
+    {
+        <i class="fa-regular fa-star"></i>
+    }
+</div>

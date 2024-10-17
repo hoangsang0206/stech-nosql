@@ -1,0 +1,35 @@
+﻿@model AddAddressVM
+
+<div>
+    <div>
+        <div class="form-input-box">
+            <select asp-for="@Model.CityCode" class="form-input city-select">
+                @await Component.InvokeAsync("SelectOptions")
+            </select>
+        </div>
+        <span asp-validation-for="@Model.CityCode"></span>
+    </div>
+    <div>
+        <div class="form-input-box">
+            <select asp-for="@Model.DistrictCode" class="form-input district-select">
+                <option value="" selected>Chọn quận/huyện</option>
+            </select>
+        </div>
+        <span asp-validation-for="@Model.DistrictCode"></span>
+    </div>
+    <div>
+        <div class="form-input-box">
+            <select asp-for="@Model.WardCode" class="form-input ward-select">
+                <option value="" selected>Chọn xã/phường</option>
+            </select>
+        </div>
+        <span asp-validation-for="@Model.WardCode"></span>
+    </div>
+    <div>
+        <div class="form-input-box">
+            <input asp-for="@Model.Address" type="text" class="form-input specific-address" />
+            <label class="input-label">Số nhà, địa chỉ</label>
+        </div>
+        <span asp-validation-for="@Model.Address"></span>
+    </div>
+</div>

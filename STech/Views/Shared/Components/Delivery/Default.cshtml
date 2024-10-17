@@ -1,0 +1,20 @@
+﻿@model IEnumerable<DeliveryMethod>
+
+<div class="d-flex flex-column align-items-start">
+    @{
+        bool isFirst = true;
+        foreach (DeliveryMethod method in Model)
+        {
+            <div class="mb-2">
+                <div class="page-radio-input">
+                    <label for="delivery-@method.DeliveryMedId" class="d-flex gap-3 @(isFirst ? "checked" : "")">
+                        <input type="radio" name="DeliveryMethod" id="delivery-@method.DeliveryMedId" value="@method.DeliveryMedId" @(isFirst ? "checked" : "") />
+                        <span style="font-size: 1rem">@method.DeliveryName</span>
+                    </label>
+                </div>
+            </div>
+
+            isFirst = false;
+        }
+    }
+</div>

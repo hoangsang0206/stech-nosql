@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Tạo đơn hàng - STech";
+    ViewData["PageTitle"] = "Tạo đơn hàng";
+}
+
+<section class="page-wrapper h-auto h-lg-100">
+    <div class="row p-0 m-0 h-100">
+        <div class="col-12 col-lg-8 p-0 h-lg-100">
+            <div class="page-content-box h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between mb-3">
+                    <p class="page-content-header">SẢN PHẨM</p>
+
+                    @await Component.InvokeAsync("SelectWarehouses")
+                </div>
+
+                <div class="page-search-form">
+                    <form>
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="search-order-products" placeholder="Nhập tên sản phẩm" required />
+                    </form>
+                    <button class="btn-view-more view-more-products">
+                        Tất cả
+                    </button>
+
+                    <div class="page-search-results search-order-product-results">
+                        
+                    </div>
+                </div>
+
+                <div class="order-products flex-grow-1 overflow-y-auto overflow-x-hidden">
+                    @* <p class="text-center mt-5">Vui lòng chọn sản phẩm</p> *@
+
+                    <table class="w-100 mt-2">
+                        <thead>
+                            <th class="weight-600">STT</th>
+                            <th class="fweight-600 ps-2">Sản phẩm</th>
+                            <th class="fweight-600">Số lượng</th>
+                            <th class="fweight-600">Giá bán</th>
+                            <th class="fweight-600 text-end">Thành tiền</th>
+                        </thead>
+
+                        <tbody class="order-product-items">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4 p-0 ps-lg-3 mt-3 mt-lg-0">
+            <div class="page-content-box h-100 d-flex flex-column">
+                <p class="page-content-header">THÔNG TIN NHẬN HÀNG</p>
+
+                <div class="page-search-form">
+                    <form>
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="search-customers" placeholder="Nhập số điện thoại khách hàng" required />
+                    </form>
+
+                    <div class="page-search-results search-customer-results">
+
+                    </div>
+                </div>
+
+                <div class="flex-grow-1 overflow-y-auto">
+                    <div class="customer-info-wrapper  d-flex flex-column">
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between mt-2 mb-2">
+                                <p class="page-content-header">Khách hàng <span class="text-danger" style="font-size: 1.2rem">*</span></p>
+                                <button class="page-btn btn-lightblue show-form-add-customer" style="padding: .3rem .7rem">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+           
+                            <div class="ps-3">
+                                <input type="hidden" id="customer-id" value="" />
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-regular fa-user" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="customer-name" style="font-size: 1rem">-</span>
+                                </div>
+                                <div class="d-flex aign-items-center mt-2">
+                                    <i class="fa-solid fa-mobile-screen" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="customer-phone" style="font-size: 1rem">-</span>
+                                </div>
+                                <div class="d-flex aign-items-center mt-2">
+                                    <i class="fa-solid fa-location-dot" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="customer-address" class="text-overflow-2" style="font-size: 1rem">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <p class="page-content-header">Người nhận hàng (nếu có)</p>
+                                <div class="d-flex gap-1">
+                                    <button class="page-btn btn-red delete-recipient-info">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                    <button class="page-btn edit-recipient-info">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="ps-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-regular fa-user" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="recipient-name" style="font-size: 1rem">-</span>
+                                </div>
+                                <div class="d-flex aign-items-center mt-2">
+                                    <i class="fa-solid fa-mobile-screen" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="recipient-phone" style="font-size: 1rem">-</span>
+                                </div>
+                                <div class="d-flex aign-items-center mt-2">
+                                    <i class="fa-solid fa-location-dot" style="width: 2rem; font-size: 1.1rem"></i>
+                                    <span id="recipient-address" class="text-overflow-2" style="font-size: 1rem">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="input-recipient-name" />
+                        <input type="hidden" id="input-recipient-phone" />
+                        <input type="hidden" id="input-recipient-address" />
+                        <input type="hidden" id="input-recipient-ward-code" />
+                        <input type="hidden" id="input-recipient-district-code" />
+                        <input type="hidden" id="input-recipient-city-code" />
+
+                        <hr />
+
+                        <div>
+                            <div>
+                                @await Component.InvokeAsync("Delivery")
+                            </div>
+
+                            <div class="form-input-box mt-2">
+                                <textarea class="form-input" id="order-note" placeholder="Ghi chú (nếu có)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column align-items-end mt-2">
+                    <div class="d-flex flex-column align-items-end justify-content-end">
+                        <div>
+                            <span>Tổng tiền hàng:&nbsp;&nbsp;</span>
+                            <span class="fweight-600 subtotal" data-subtotal="0">0đ</span>
+                        </div>
+                        <div>
+                            <span>Phí vận chuyển:&nbsp;&nbsp;</span>
+                            <span class="fweight-600 shipping-fee" data-shipping="0">0đ</span>
+                        </div>
+                        <div>
+                            <span>Thành tiền:&nbsp;&nbsp;</span>
+                            <span class="fweight-600 total-price" data-total="0">0đ</span>
+                        </div>
+                    </div>
+                    <button class="form-submit-btn page-btn-sm btn-blue mt-3 btn-create-order">
+                        Tạo đơn hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("PartialViews/Form_AddCustomer", new CustomerVM())
+
+<div class="form-container edit-recipient">
+    <div class="form-box" style="width: 35rem">
+        <div class="form-header-wrapper">
+            <div class="form-header">Thông tin người nhận hàng</div>
+            <div class="close-form">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <form>
+            <div>
+                <div class="form-input-box">
+                    <input type="text" id="edit-recipient-name" class="form-input" required />
+                    <label class="input-label">Họ tên</label>
+                </div>
+                <div class="form-input-box">
+                    <input type="text" id="edit-recipient-phone" class="form-input" required/>
+                    <label class="input-label">Số điện thoại</label>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("PartialViews/Form_AddressItems", new AddAddressVM())
+
+            <div class="form-btn-wrapper">
+                <button type="submit" class="form-submit-btn page-btn-sm">Thêm mới</button>
+                <button type="reset" class="form-reset-btn">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/css/orders.css" />
+}
+
+@section Scripts {
+    <script src="~/admin/js/createorder.js"></script>
+    <script src="~/js/address.js"></script>
+    <script src="~/admin/js/customers.js"></script>
+}

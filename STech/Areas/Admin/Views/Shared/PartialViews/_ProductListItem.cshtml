@@ -1,0 +1,69 @@
+﻿@model Tuple<Product, int>
+
+@{
+    Product product = Model.Item1;
+
+    string imageUrl = product.ProductImages.FirstOrDefault()?.ImageSrc ?? "/admin/images/no-image.jpg";
+    int total_qty = product.WarehouseProducts.Sum(x => x.Quantity);
+
+    string status_badge = "<span class=\"page-badge badge-success\">Còn hàng</span>";
+
+    if (product.IsDeleted == true)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Đã xóa</span>";
+    }
+    else if (!product.IsActive == true)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Chưa kích hoạt</span>";
+    }
+    else if (total_qty <= 0)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Hết hàng</span>";
+    }
+    else if (total_qty <= 5)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Sắp hết hàng</span>";
+    }
+}
+
+<tr data-item="@product.ProductId">
+    <td>
+        <input type="checkbox" name="page-table-checkbox" value="@product.ProductId" />
+    </td>
+    <td>
+        @Model.Item2
+    </td>
+    <td>
+        <div class="lazy-loading">
+            <img lazy-src="@imageUrl" alt="" style="width: 2rem">
+        </div>
+    </td>
+    <td>
+        <span class="text-overflow-1">@product.ProductName</span>
+    </td>
+    <td>
+        @CurrencyFormatter.Format(product.OriginalPrice)
+    </td>
+    <td>
+        @CurrencyFormatter.Format(product.Price)
+    </td>
+    <td>
+        @Html.Raw(status_badge)
+    </td>
+    <td>
+        @total_qty
+    </td>
+    <td>
+        <div class="d-flex gap-1 align-items-center justify-content-end">
+            <a class="page-table-btn btn-lightblue" href="/admin/products/1/@product.ProductId">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </a>
+            @if(product.IsDeleted != true)
+            {
+                <button class="page-table-btn btn-red delete-product" data-product="@product.ProductId">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            }
+        </div>
+    </td>
+</tr>

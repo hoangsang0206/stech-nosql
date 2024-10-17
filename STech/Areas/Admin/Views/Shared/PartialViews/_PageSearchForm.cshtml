@@ -1,0 +1,21 @@
+﻿@model Tuple<string, string, string>
+
+@{
+    string form_class_name = Model.Item1;
+    string placeholder = Model.Item2;
+}
+
+<div class="position-relative">
+    <form class="search-form @form_class_name">
+        <input type="text" id="search" placeholder="@placeholder" value="@Model.Item3" required />
+        <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+
+    <div class="search-result-wrapper position-absolute show">
+        <div class="search-result-list">
+            
+        </div>
+    </div>
+</div>

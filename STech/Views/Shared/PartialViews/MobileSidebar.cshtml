@@ -1,0 +1,63 @@
+﻿<div class="mobile-sidebar">
+    <div class="mobile-sidebar-header d-flex align-items-center justify-content-between">
+        <span class="mobile-sidebar-header-title">DANH MỤC SẢN PHẨM</span>
+        <div class="sidebar-close-btn">
+            <ion-icon name="close-outline" class="close-icon"></ion-icon>
+        </div>
+    </div>
+    <div class="mobile-sidebar-content">
+        @await Component.InvokeAsync("Menu")
+
+        <div class="mobile-sidebar-info">
+            <h4 class="sidebar-info-title">
+                Thông tin
+            </h4>
+            <div class="sidebar-info-content">
+                <ul class="sidebar-info-list">
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link sidebar-info-phone">
+                            <i class="fa-solid fa-phone-volume megamenu-icon"></i>
+                            0123456789
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link">
+                            <i class="fa-solid fa-tags megamenu-icon"></i>
+                            Tổng hợp khuyến mãi
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link">
+                            <i class="fa-solid fa-screwdriver-wrench megamenu-icon"></i>
+                            Chính sách bảo hành
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link">
+                            <i class="fa-solid fa-credit-card megamenu-icon"></i>
+                            Hướng dẫn thanh toán
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link">
+                            <i class="fa-solid fa-money-check-dollar megamenu-icon"></i>
+                            Hướng dẫn trả góp
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="#" class="sidebar-info-link">
+                            <i class="fa-solid fa-newspaper megamenu-icon"></i>
+                            Tin tức
+                        </a>
+                    </li>
+                    <li class="sidebar-info-list-item">
+                        <a href="/about" class="sidebar-info-link">
+                            <i class="fa-solid fa-phone megamenu-icon"></i>
+                            Liên hệ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

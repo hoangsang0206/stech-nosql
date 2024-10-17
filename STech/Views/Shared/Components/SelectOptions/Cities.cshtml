@@ -1,0 +1,7 @@
+﻿@model IEnumerable<AddressVM.City>
+
+<option value="" selected>Chọn tỉnh/thành phố</option>
+@foreach(AddressVM.City city in Model)
+{
+    <option value="@city.code" >@city.name_with_type</option>
+}

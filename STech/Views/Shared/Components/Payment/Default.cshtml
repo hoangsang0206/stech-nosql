@@ -1,0 +1,28 @@
+﻿@model IEnumerable<PaymentMethod>
+
+<div class="d-flex flex-column align-items-start">
+    @if(Model.Count() <= 0)
+    {
+        <p class="text-danger">Không có phương thức thanh toán khả dụng</p>
+    }
+    else
+    {
+        bool isFirst = true;
+        foreach(PaymentMethod method in Model)
+        {
+            <div class="mb-2">
+                <div class="page-radio-input">
+                    <label for="payment-@method.PaymentMedId" class="d-flex gap-3 @(isFirst ? "checked" : "")">
+                        <input type="radio" name="PaymentMethod" id="payment-@method.PaymentMedId" value="@method.PaymentMedId" @(isFirst ? "checked" : "") />
+                        <span class="d-flex gap-2 text-decoration-none text-black">
+                            <img src="@method.LogoSrc" alt="" style="width: 4rem" />
+                            <span style="font-size: 1rem">@method.PaymentName</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
+            isFirst = false;
+        }
+    }
+</div>

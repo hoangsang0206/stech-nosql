@@ -1,0 +1,229 @@
+﻿@{
+    ViewData["Title"] = "Danh sách đơn hàng - STech";
+    ViewData["PageTitle"] = "Đơn hàng";
+}
+
+@model IEnumerable<InvoiceMVM>
+
+<section class="page-wrapper">
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap">
+        <div class="page-btn-nav-wrapper mb-1">
+            <div class="page-btn-nav">
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "unaccepted" ? "active" : "")" data-load-orders="unaccepted">Chờ xác nhận</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "accepted" ? "active" : "")" data-load-orders="accepted">Chờ giao hàng</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "paid" ? "active" : "")" data-load-orders="paid">Đã thanh toán</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "unpaid" ? "active" : "")" data-load-orders="unpaid">Chưa thanh toán</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "completed" ? "active" : "")" data-load-orders="completed">Đã giao hàng</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "cancelled" ? "active" : "")" data-load-orders="cancelled">Đã hủy</div>
+                <div class="page-btn-nav-item orders-nav @(ViewBag.ActivePageNav == "all" ? "active" : "")" data-load-orders="all">Tất cả đơn hàng</div>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("PartialViews/_PageSearchForm", new Tuple<string, string, string>("search-orders", "Tìm theo mã đơn/số điện thoại", ViewBag.SearchValue))
+    </div>
+
+    <div class="page-table-wrapper mt-2">
+        <table class="page-table">
+            <thead class="page-table-header">
+                <tr>
+                    <th>STT</th>
+                    <th>Mã đơn hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Số SP</th>
+                    <th>Thành tiền</th>
+                    <th>PT thanh toán</th>
+                    <th>TT thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody class="order-list">
+                @{
+                    int index = 0;
+                }
+
+                @foreach (InvoiceMVM invoice in Model)
+                {
+                    index++;
+                    string payment_status = "";
+                    string order_status = "";
+                    int total_items = invoice.InvoiceDetails.Sum(x => x.Quantity);
+
+                    switch (invoice.PaymentStatus)
+                    {
+                        case PaymentContants.Paid:
+                            payment_status = "<span class=\"page-badge badge-success\">Đã thanh toán</span>";
+                            break;
+
+                        case PaymentContants.UnPaid:
+                            payment_status = "<span class=\"page-badge badge-warning\">Chờ thanh toán</span>";
+                            break;
+
+                        case PaymentContants.PaymentFailed:
+                            payment_status = "<span class=\"page-badge badge-error\">Thanh toán thất bại</span>";
+                            break;
+
+                    }
+
+                    if (invoice.IsCancelled)
+                    {
+                        order_status = "<span class=\"page-badge badge-error\">Đã hủy</span>";
+                    }
+                    else if (invoice.IsCompleted)
+                    {
+                        order_status = "<span class=\"page-badge badge-success\">Đã giao hàng</span>";
+                    }
+                    else if (invoice.IsAccepted)
+                    {
+                        order_status = "<span class=\"page-badge badge-warning\">Chờ giao hàng</span>";
+                    }
+                    else
+                    {
+                        order_status = "<span class=\"page-badge badge-warning\">Chờ xác nhận</span>";
+                    }
+
+                    <tr>
+                        <td class="fweight-600">@index</td>
+                        <td>@invoice.InvoiceId</td>
+                        <td>@invoice.OrderDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@total_items</td>
+                        <td class="fweight-600">@CurrencyFormatter.Format(invoice.Total)</td>
+                        <td>@invoice?.PaymentMethod?.PaymentName</td>
+                        <td>@Html.Raw(payment_status)</td>
+                        <td>@Html.Raw(order_status)</td>
+                        <td>
+                            <div class="d-flex gap-1 align-items-center justify-content-end">
+                                <button class="page-table-btn btn-lightblue view-order" data-order="@invoice.InvoiceId">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="page-table-btn btn-blue print-order" data-order="@invoice.InvoiceId">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>
+                                @if (!invoice.IsAccepted && !invoice.IsCancelled && !invoice.IsCompleted)
+                                {
+                                    <button class="page-table-btn btn-green accept-order" data-order="@invoice.InvoiceId">
+                                        <i class="fa-solid fa-check"></i>
+                                    </button>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+    @await Html.PartialAsync("PartialViews/_Pagination", new Tuple<int, int>(ViewBag.CurrentPage, ViewBag.TotalPages))
+
+</section>
+
+<section class="form-container order-detail-wrapper">
+    <div class="form-box order-detail-box d-flex flex-column">
+        <div>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="form-header d-flex align-items-center gap-2">
+                    <span>Chi tiết đơn hàng&nbsp;-&nbsp;</span>
+                    <span id="order-id"></span>
+                </div>
+
+                <button class="close-form-text">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Đóng</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-grow-1 pt-3">
+            <div class="row m-0 p-0">
+                <div class="col-12 col-lg-8 p-0">
+                    <div class="page-content-box">
+                        <table class="table">
+                            <thead>
+                                <th>STT</th>
+                                <th>Sản phẩm</th>
+                                <th>Đơn giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </thead>
+                            <tbody id="order-item-list">
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <img style="width: 3rem" alt="" src="~/images/no-image.jpg" />
+                                            <span>Product name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>100.000đ</span>
+                                    </td>
+                                    <td>
+                                        <span>2</span>
+                                    </td>
+                                    <td>
+                                        <span>200.000đ</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <img style="width: 3rem" alt="" src="~/images/no-image.jpg" />
+                                            <span class="text-overflow-2">Product name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>100.000đ</span>
+                                    </td>
+                                    <td>
+                                        <span>2</span>
+                                    </td>
+                                    <td>
+                                        <span>200.000đ</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <img style="width: 3rem" alt="" src="~/images/no-image.jpg" />
+                                            <span>Product name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>100.000đ</span>
+                                    </td>
+                                    <td>
+                                        <span>2</span>
+                                    </td>
+                                    <td>
+                                        <span>200.000đ</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4 p-0">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/css/orders.css" />
+}
+
+@section Scripts {
+    <script src="~/admin/js/orders.js"></script>
+}

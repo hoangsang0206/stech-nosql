@@ -1,0 +1,50 @@
+﻿@{
+    CategoryVM category = new CategoryVM();
+}
+
+<div class="form-container form-category">
+    <div class="form-box" style="width: 35rem">
+        <div class="form-header-wrapper">
+            <div class="form-header">Cập nhật danh mục</div>
+            <div class="close-form">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <form data-action="update">
+            <div class="page-input-box">
+                <label>Mã danh mục</label>
+                <div class="page-input">
+                    <input asp-for="@category.CategoryId" type="text" id="category_id" placeholder="Nhập mã danh mục" />
+                </div>
+                <span asp-validation-for="@category.CategoryId"></span>
+            </div>
+            <div class="page-input-box">
+                <label>Tên danh mục</label>
+                <div class="page-input">
+                    <input asp-for="@category.CategoryName" type="text" id="category_name" placeholder="Nhập tên danh mục" />
+                </div>
+                <span asp-validation-for="@category.CategoryName"></span>
+            </div>
+
+            <div>
+                <input type="file" id="category_image" accept="image/*" hidden />
+                <div class="preview-image-box" style="width: 6rem">
+                    <img src="~/admin/images/no-image.jpg" alt="" />
+                </div>
+
+                <div class=" d-inline-block mt-2">
+                    <a href="javascript:" class="click-upload-category-image page-btn btn-blue d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <span>Tải lên hình ảnh danh mục</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-btn-wrapper">
+                <button type="submit" class="form-submit-btn page-btn-sm">Cập nhật danh mục</button>
+                <button type="reset" class="form-reset-btn">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>

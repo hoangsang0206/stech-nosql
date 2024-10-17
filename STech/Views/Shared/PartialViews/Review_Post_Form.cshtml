@@ -1,0 +1,120 @@
+﻿@model Tuple<ReviewVM, Product>
+
+@{
+    ProductImage? image = Model.Item2.ProductImages.FirstOrDefault();
+    Product product = Model.Item2;
+
+    ReviewVM review = Model.Item1;
+    review.ReviewerInfo = new ReviewVM.Reviewer();
+}
+
+<div class="form-container post-review">
+    <div class="form-box" style="width: 45rem">
+        <div class="form-header-wrapper">
+            <span>Đánh giá sản phẩm</span>
+
+            <a href="javascript:" class="close-form">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+        </div>
+
+        <form data-product="@product.ProductId">
+            <div class="d-flex flex-column align-items-center">
+                <div style="border-radius: var(--radius); width: 8rem; height: 8rem; overflow: hidden; display: grid; place-items: center">
+                    <img src="@(image?.ImageSrc ?? "/images/no-image.jpg")" alt="" style="width: 100%; object-fit: cover" />
+                </div>
+
+                <div>
+                    <strong style="font-size: 1.2rem">@product.ProductName</strong>
+                </div>
+
+                <div class="mt-2 mb-3">
+                    @await Html.PartialAsync("PartialViews/Review_StarGroup_Large")
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <p class="m-0 mb-2" style="font-weight: 500">
+                    Viết đánh giá
+                    <span style="color: #e30019">*</span>
+                </p>
+
+                <textarea asp-for="@review.Content" style="border-radius: var(--radius); border: 1px solid var(--border-color); height: 12rem" 
+                    class="w-100 p-3" 
+                    id="review-content"
+                    placeholder="Hãy chia sẻ đánh giá của bạn về sản phẩm" required></textarea>
+
+                <span asp-validation-for="@review.Content"></span>
+            </div>
+
+            <div class="mt-3">
+                <p class="m-0 mb-2" style="font-weight: 500">
+                    Hình ảnh đánh giá
+                    <span style="color: #e30019">*</span>
+                    <span class="text-secondary">&nbsp;(tối đa 3 ảnh)</span>
+                </p>
+
+                <div class="d-flex gap-2">
+                    <div class="post-review__images d-flex gap-2"></div>
+                    <a class="click-upload-review-images" href="javascript:">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
+                    <input type="file" id="click-upload-images" accept="image/*" multiple hidden />
+                    <input type="file" id="review-images" accept="image/*" multiple hidden />
+                </div>
+            </div>
+
+            @if(User.Identity == null || !User.Identity.IsAuthenticated)
+            {
+                <div class="mt-3 row m-0 p-0">
+                    <div class="col-12 p-0">
+                        <p class="m-0 mb-2" style="font-weight: 500">
+                            Tên hiển thị
+                            <span style="color: #e30019">*</span>
+                        </p>
+
+                        <div class="page-input-box">
+                            <div class="page-input">
+                                <input asp-for="@review.ReviewerInfo.ReviewerName" type="text" id="reviewer-name" placeholder="Nhập tên hiển thị" required />
+                            </div>
+                            <span asp-validation-for="@review.ReviewerInfo.ReviewerName"></span>
+                        </div>
+                    </div>
+                    <div class="row m-0 p-0">
+                        <div class="col-12 col-md-6 p-0 pe-md-1">
+                            <p class="m-0 mb-2" style="font-weight: 500">
+                                Email
+                                <span style="color: #e30019">*</span>
+                                <span class="text-secondary">&nbsp;(không hiển thị trên website)</span>
+                            </p>
+
+                            <div class="page-input-box">
+                                <div class="page-input" >
+                                    <input asp-for="@review.ReviewerInfo.ReviewerEmail" id="reviewer-email" type="text" placeholder="Nhập địa chỉ email" required />
+                                </div>
+                                <span asp-validation-for="@review.ReviewerInfo.ReviewerEmail"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6 p-0 ps-md-1">
+                            <p class="m-0 mb-2" style="font-weight: 500">
+                                Số điện thoại
+                                <span class="text-secondary">&nbsp;(không hiển thị trên website)</span>
+                            </p>
+
+                            <div class="page-input-box">
+                                <div class="page-input">
+                                    <input asp-for="@review.ReviewerInfo.ReviewerPhone" id="reviewer-phone" type="text" placeholder="Nhập số điện thoại" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex gap-2 justify-content-end">
+                <button class="form-reset-btn" type="reset">Hủy</button>
+                <button class="form-submit-btn page-btn-sm" type="submit">Gửi đánh giá</button>
+            </div>
+        </form>
+    </div>
+</div>

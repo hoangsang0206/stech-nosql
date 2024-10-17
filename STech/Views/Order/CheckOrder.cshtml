@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Tra cứu đơn hàng - STech";
+}
+
+ @model Tuple<InvoiceMVM?, IEnumerable<Breadcrumb>>
+
+@await Html.PartialAsync("PartialViews/Breadcrumb", Model.Item2)
+
+<section class="page-container-padding check-order-page">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <h3>Tra cứu đơn hàng</h3>
+        <form method="GET" asp-controller="Order" asp-action="CheckOrder" class="form-check-order mt-3">
+            <div class="row m-0 p-0">
+                <div class="col-12 col-sm-6">
+                    <div class="page-input-box">
+                        <label>Mã hóa đơn</label>
+                        <div class="page-input">
+                            <i class="fa-regular fa-file-lines"></i>
+                            <input name="oId" type="text" value="@ViewBag.SearchOId" placeholder="Mã hóa đơn" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <div class="page-input-box">
+                        <label>Số điện thoại đặt hàng</label>
+                        <div class="page-input">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <input name="phone" type="text" value="@ViewBag.SearchPhone" placeholder="Số điện thoại đặt hàng" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row m-0 p-0">
+                <div class="col-12">
+                    <button type="submit" class="form-submit-btn">
+                        Tra cứu đơn hàng
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    @if(Model.Item1 != null)
+    {
+        <div class="mt-5">
+            <h3 class="text-center mb-4">Thông tin đơn hàng</h3>
+            @await Html.PartialAsync("PartialViews/Order_OrderDetail", Model.Item1)
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/order.js"></script>
+}

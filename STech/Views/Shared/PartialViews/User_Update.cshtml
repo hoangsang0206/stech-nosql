@@ -1,0 +1,81 @@
+﻿@model Tuple<User, UserUpdateVM>
+
+@{
+    User user = Model.Item1;
+}
+
+<form method="POST" class="form-update-user">
+    <div class="row m-0 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="page-input-box">
+                <label>Họ tên</label>
+                <div class="page-input">
+                    <i class="fa-regular fa-id-card"></i>
+                    <input asp-for="Item2.FullName" id="update_fullname" type="text" value="@(user.FullName ?? "")" placeholder="Họ tên" />
+                </div>
+                <span asp-validation-for="Item2.FullName"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0 mt-1 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="page-input-box">
+                <label>Ngày sinh</label>
+                <div class="page-input">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <input asp-for="Item2.DOB" id="update_dob" type="date" value="@(user.Dob.HasValue ? user.Dob.Value.ToString("yyyy-MM-dd") : "")" />
+                </div>
+                <span asp-validation-for="Item2.DOB"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0 mt-1 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="page-input-box">
+                <label>Số điện thoại</label>
+                <div class="page-input">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <input asp-for="Item2.PhoneNumber" id="update_phonenumber" type="text" value="@(user.Phone ?? "")" placeholder="Số điện thoại" />
+                </div>
+                <span asp-validation-for="Item2.PhoneNumber"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0 mt-1 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="page-input-box">
+                <label>Email</label>
+                <div class="page-input">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input asp-for="Item2.Email" id="update_email" type="text" value="@(user.Email ?? "")" placeholder="example@gmail.com" />
+                </div>
+                <span asp-validation-for="Item2.Email"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0 mt-2 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="d-flex align-items-center gap-4">
+                <div class="d-flex align-items-center gap-1">
+                    <label class="cursor-pointer" for="gender-male" style="font-size: 1.1rem">Nam</label>
+                    <input asp-for="Item2.Gender" class="cursor-pointer" type="radio" name="update_gender" id="gender-male" value="male" checked="@(user.Gender == "male")" />
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <label class="cursor-pointer" for="gender-female" style=" font-size: 1.1rem">Nữ</label>
+                    <input asp-for="Item2.Gender" class="cursor-pointer" type="radio" name="update_gender" id="gender-female" value="female" checked="@(user.Gender == "female")" />
+                </div>
+            </div>
+            <span asp-validation-for="Item2.Gender"></span>
+        </div>
+    </div>
+
+    <div class="row m-0 p-0">
+        <div class="col-12 col-sm-11 col-lg-8">
+            <div class="mt-4 form-error"></div>
+        </div>
+    </div>
+
+    <button type="submit" class="form-submit-btn page-btn-sm mt-4">
+        Cập nhật thông tin
+    </button>
+</form>

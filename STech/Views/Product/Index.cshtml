@@ -1,0 +1,402 @@
+﻿@model Tuple<ProductMVM, IEnumerable<Product>, List<Breadcrumb>>
+
+@{
+    ProductMVM product = Model.Item1;
+
+    List<Breadcrumb> breadcrumbs = Model.Item3;
+
+    IEnumerable<ProductImage> productImages = product.ProductImages;
+    IEnumerable<ProductSpecification> productSpecs = product.ProductSpecifications;
+    IEnumerable<WarehouseProduct> wh = product.WarehouseProducts ?? new List<WarehouseProduct>();
+
+    IEnumerable<Product> similarProducts = Model.Item2;
+
+    int inStock = wh.Sum(w => w.Quantity);
+
+    ViewData["Title"] = product.ProductName + " - STech";
+
+    bool isAuthenticated = User.Identity != null && User.Identity.IsAuthenticated;
+}
+
+@await Html.PartialAsync("PartialViews/Breadcrumb", breadcrumbs)
+
+<section class="product-detail" data-product="@product.ProductId" data-authenticated="@(isAuthenticated ? 1 : 0)">
+    <div class="container-fluid">
+        <div class="row product-detail-box p-0">
+            <div class="col-12 col-md-5 product-gallery">
+                <div class="slider-main">
+                    @if (productImages.Count() > 0)
+                    {
+                        foreach (ProductImage pImage in productImages)
+                        {
+                            <img src="@pImage.ImageSrc" alt="" />
+                        }
+                    }
+                    else
+                    {
+                        <img src="~/images/no-image.jpg" alt="" />
+                    }
+
+                </div>
+                <div class="slider-nav mt-3">
+                    @foreach (ProductImage pImage in productImages)
+                    {
+                        <div class="slick-slider-item">
+                            <img src="@pImage.ImageSrc" alt="" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-12 col-md-7 product-info">
+                <div class="product-info-name">
+                    <h3>@product.ProductName</h3>
+                </div>
+                <div>
+
+                </div>
+                <div class="product-info-original-price">
+                    @{
+                        double discountPercent = 0;
+                    }
+                    @if (product.OriginalPrice > product.Price)
+                    {
+                        <span>@CurrencyFormatter.Format(product.OriginalPrice)</span>
+
+                        discountPercent = ((Convert.ToDouble(product.OriginalPrice) - Convert.ToDouble(product.Price))
+                        / Convert.ToDouble(product.OriginalPrice)) * 100;
+                    }
+                </div>
+                <div class="product-info-price d-flex align-items-center">
+                    <h2>@CurrencyFormatter.Format(product.Price)</h2>
+                    @if (discountPercent > 0)
+                    {
+                        <div class="product-info-discount-percent">
+                            @("-" + (int)discountPercent + "%")
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-3">
+                    @if(product.IsActive == true)
+                    {
+                        @if (inStock > 0)
+                        {
+                            <div class="d-flex flex-column flex-sm-row gap-3">
+                                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                                {
+                                    <button class="buy-action-btn" onclick="window.location.href='/order/checkout?pId=@product.ProductId'">
+                                        <div>
+                                            <h4>MUA NGAY</h4>
+                                            <span>Giao tận nơi hoặc nhận tại cửa hàng</span>
+                                        </div>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="buy-action-btn not-logged-in">
+                                        <div>
+                                            <h4>MUA NGAY</h4>
+                                            <span>Giao tận nơi hoặc nhận tại cửa hàng</span>
+                                        </div>
+                                    </button>
+                                }
+                                <button class="add-to-cart-action" data-product="@product.ProductId">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <button class="buy-action-btn" disabled>
+                                    <h4>HẾT HÀNG</h4>
+                                </button>
+                            </div>
+                        }
+                    } 
+                    else
+                    {
+                        <div>
+                            <button class="buy-action-btn" disabled>
+                                <h4>SẢN PHẨM NGỪNG KINH DOANH</h4>
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                <div class="mt-3">
+                    @Html.Raw(product.ShortDescription)
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3 p-0">
+        <div class="row p-0 flex-column-reverse flex-md-row">
+            <div class="col-12 col-md-8">
+                <div class="product-detail-box h-100">
+                    <div class="box-header">
+                        <h4>Mô tả sản phẩm</h4>
+                    </div>
+                    <div class="mt-3">
+                        @if (!string.IsNullOrEmpty(product.Description))
+                        {
+                            <div class="product-contents-container">
+                                <div class="product-contents">
+                                    @Html.Raw(product.Description)
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center view-contents">
+                                <a href="javascript:" class="d-flex align-items-center gap-2">
+                                    <span>Xem tất cả</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="height: 50rem; display: flex; align-items: center; justify-content: center">
+                                <p>Sản phẩm này chưa có mô tả</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 ps-md-0">
+                <div class="product-detail-box">
+                    <div class="box-header">
+                        <h4>Thông số kỹ thuật</h4>
+                    </div>
+                    <div class="product-specifications mt-4">
+                        <div class="product-specs-box">
+                            <table class="product-specs-table">
+                                <tr>
+                                    <td>Hãng SX</td>
+                                    <td>@(product.Brand != null ? product.Brand.BrandName : "")</td>
+                                </tr>
+                                <tr>
+                                    <td>Bảo hành</td>
+                                    <td>@($"{product.Warranty} tháng")</td>
+                                </tr>
+                                @if (productSpecs.Count() > 0)
+                                {
+                                    foreach (ProductSpecification spec in productSpecs)
+                                    {
+                                        <tr>
+                                            <td>@spec.SpecName</td>
+                                            <td>@spec.SpecValue</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+
+                        <button class="w-100 mt-3 view-product-info view-specification">
+                            Xem tất cả thông số
+                        </button>
+                    </div>
+                </div>
+
+                <div class="product-detail-box mt-3 mb-3 mb-md-0">
+                    <div class="box-header">
+                        <h4>Sản phẩm tương tự</h4>
+                    </div>
+
+                    <div>
+                        @foreach(Product p in similarProducts)
+                        {
+                            double p_discountPercent = 0;
+
+                            <div class="d-flex justify-content-between gap-3 mb-3">
+                                <div style="border-radius: var(--radius); border: 1px solid #ccc; padding: .3rem; display: grid; place-items: center">
+                                    <img style="width: 5rem; border-radius: var(--radius)" src="@(p.ProductImages.FirstOrDefault()?.ImageSrc ?? "/images/no-image.jpg")" alt="" />
+                                </div>
+                                <div class="d-flex gap-3 align-items-center justify-content-between flex-grow-1">
+                                    <div>
+                                        <div class="product-name m-0 p-0 cursor-pointer" onclick="window.location.href='/product/@p.ProductId'">
+                                            @p.ProductName
+                                        </div>
+                                        <div>
+                                            <div class="product-original-price">
+                                                @if (p.OriginalPrice > p.Price)
+                                                {
+                                                    p_discountPercent = Convert.ToDouble((p.OriginalPrice - p.Price)
+                                                    / p.OriginalPrice) * 100;
+                                                    <span>@CurrencyFormatter.Format(p.OriginalPrice)</span>
+                                                }
+                                            </div>
+                                            <div class="product-price d-flex align-items-center">
+                                                <span>@CurrencyFormatter.Format(p.Price)</span>
+                                                @if (p_discountPercent > 0)
+                                                {
+                                                    <div class="product-discount-percent">
+                                                        @("-" + (int)p_discountPercent + "%")
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a href="javascript:void(0)" class="click-add-to-card" data-product="@p.ProductId">
+                                        <i class="fa-solid fa-cart-plus" style="font-size: 1.2rem"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-3 p-0">
+        <div class="row p-0">
+            <div class="col-12 m-0">
+                <div class="product-detail-box">
+                    <div class="box-header">
+                        <h4>Đánh giá & nhận xét sản phẩm</h4>
+                    </div>
+
+                    <div>
+                        <div class="row m-0 mt-3 p-0">
+                            <div class="col-12 col-lg-6 d-flex flex-wrap align-items-center gap-4 gap-lg-5">
+                                <div class="d-flex flex-column rating-summary">
+                                    <div class="rating-star-summary d-flex gap-2 align-items-center">
+                                        <i class="fa-solid fa-star"></i>
+                                        <span class="ms-2" id="avg-rating"></span>
+                                    </div>
+                                    <span class="mt-3" id="total-reviews"></span>
+                                </div>
+
+                                <div class="overflow-x-auto" id="rating-summary">
+                                    
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 d-flex justify-content-center justify-content-lg-end">
+                                <div class="mt-3">
+                                    <div>
+                                        <strong>Đánh giá sản phẩm</strong>
+                                    </div>
+
+                                    <div class="mt-2 mb-3 reviewer-select-star">
+                                        @await Html.PartialAsync("PartialViews/Review_StarGroup_Large")
+                                    </div>
+
+                                    <div class="let-review-firstly d-none">
+                                        <small>Hãy là người đầu tiên đánh giá sản phẩm này.</small>
+                                    </div>                               
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                <div class="sort-reviews">
+                                    <button class="filter-button">
+                                        <i class="fa-solid fa-arrow-down-wide-short"></i>
+                                        <span class="ms-2">Sắp xếp</span>
+                                    </button>
+                                </div>
+
+                                <div class="filter-reviews overflow-x-auto">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <button class="filter-button" data-filter="all">
+                                            <span>Tất cả</span>
+                                        </button>
+                                        <button class="filter-button" data-filter="5-stars">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="ms-2">5 sao</span>
+                                        </button>
+                                        <button class="filter-button" data-filter="4-stars">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="ms-2">4 sao</span>
+                                        </button>
+                                        <button class="filter-button" data-filter="3-stars">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="ms-2">3 sao</span>
+                                        </button>
+                                        <button class="filter-button" data-filter="2-stars">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="ms-2">2 sao</span>
+                                        </button>
+                                        <button class="filter-button" data-filter="1-star">
+                                            <i class="fa-solid fa-star"></i>
+                                            <span class="ms-2">1 sao</span>
+                                        </button>
+                                   </div>
+                                </div>
+                            </div>
+
+                            <div class="reviews-list mt-4">
+                            </div>
+
+                            <div class="mt-2">
+                                <a href="javascript:" class="text-load-more load-more-reviews" data-current-page="1"></a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @await Html.PartialAsync("PartialViews/Review_Post_Form", new Tuple<ReviewVM, Product>(
+            new ReviewVM(),
+            new Product {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                ProductImages = productImages.Take(1).ToList()
+            }
+    ))
+
+    <div class="form-container product-specs-hidden">
+        <div class="form-box p-0 overflow-hidden d-flex flex-column">
+            <div class="product-specs-hidden-header w-100 d-flex align-items-center justify-content-between">
+                <div style="font-size: 1.1rem; font-weight: 600">Thông số kỹ thuật</div>
+                <a href="javascript:void(0)" class="close-product-specs">
+                    <i style="font-size: 1.1rem; color: #fff" class="fa-solid fa-xmark"></i>
+                </a>
+            </div>
+            <div class="p-4 mt-1 overflow-y-auto flex-grow-1">
+                <table class="product-specs-table">
+                    <tr>
+                        <td>Hãng SX</td>
+                        <td>@(product.Brand != null ? product.Brand.BrandName : "")</td>
+                    </tr>
+                    <tr>
+                        <td>Bảo hành</td>
+                        <td>@($"{product.Warranty ?? 0} tháng")</td>
+                    </tr>
+                    @if (productSpecs.Count() > 0)
+                    {
+                        foreach (ProductSpecification spec in productSpecs)
+                        {
+                            <tr>
+                                <td>@spec.SpecName</td>
+                                <td>@spec.SpecValue</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+            <div class="px-4 pb-4">
+                <button class="form-submit-btn close-product-specs">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link type="text/css" href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/product.js"></script>
+}

@@ -1,0 +1,56 @@
+﻿@model Product
+
+@{
+    ProductImage pImage = Model.ProductImages.FirstOrDefault() ?? new ProductImage();
+    string src = pImage.ImageSrc ?? "/images/no-image.jpg";
+    int qty = Model.WarehouseProducts?.Sum(wh => wh.Quantity) ?? 0;
+
+    double discountPercent = 0;
+}
+
+<div class="product-box">
+    <a href="/product/@Model.ProductId" class="product-link">
+        <div class="product-image lazy-loading">
+            <img lazy-src="@src" alt="" class="product-img">
+        </div>
+    </a>
+    @if (qty <= 0)
+    {
+        <div class="out-of-stock mt-1 text-center">
+            Hết hàng
+        </div>
+    }
+    <a href="/product/@Model.ProductId" class="product-link">
+        <div class="product-name">
+            @Model.ProductName
+        </div>
+    </a>
+
+    <div class="product-original-price">
+        @if (Model.OriginalPrice > Model.Price)
+        {
+            discountPercent = Convert.ToDouble((Model.OriginalPrice - Model.Price)
+            / Model.OriginalPrice) * 100;
+            <span>@CurrencyFormatter.Format(Model.OriginalPrice)</span>
+        }
+        else
+        {
+            <span style="visibility: hidden">-</span>
+        }
+    </div>
+    <div class="product-price d-flex align-items-center">
+        <span>@CurrencyFormatter.Format(Model.Price)</span>
+        @if (discountPercent > 0)
+        {
+            <div class="product-discount-percent">
+                @("-" + (int)discountPercent + "%")
+            </div>
+        }
+    </div>
+    <button class="view-product" onclick="window.location.href='/product/@Model.ProductId'">
+        <i class="fa-regular fa-eye"></i>
+    </button>
+    <button class="btn-add-to-cart" data-product="@Model.ProductId" @(qty <= 0 ? "disabled" : "")>
+        <i class="fa-solid fa-cart-plus"></i>
+    </button>
+</div>

@@ -1,0 +1,139 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="DataFiles\Address\cities.json" />
+    <Content Remove="DataFiles\Address\districts.json" />
+    <Content Remove="DataFiles\Address\wards.json" />
+    <Content Remove="wwwroot\js\address.js" />
+    <Content Remove="wwwroot\js\order.js" />
+    <Content Remove="wwwroot\js\product.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Bold.woff2" />
+    <None Remove="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Light.woff2" />
+    <None Remove="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Medium.woff2" />
+    <None Remove="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Regular.woff2" />
+    <None Remove="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Semibold.woff2" />
+    <None Remove="Areas\Admin\wwwroot\favicon.ico" />
+    <None Remove="Areas\Admin\wwwroot\images\emotes\404.png" />
+    <None Remove="Areas\Admin\wwwroot\images\emotes\genshin-impact-emote.png" />
+    <None Remove="Areas\Admin\wwwroot\images\logo\stech-logo-colors.png" />
+    <None Remove="Areas\Admin\wwwroot\images\logo\stech-logo-mobile.png" />
+    <None Remove="Areas\Admin\wwwroot\images\logo\stech-logo-text-color.png" />
+    <None Remove="Areas\Admin\wwwroot\images\logo\stech-logo.png" />
+    <None Remove="Areas\Admin\wwwroot\images\no-image.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\address.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\order.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\product.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Bold.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Light.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Medium.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Regular.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\css\fonts\SFProDisplay\SF-Pro-Display-Semibold.woff2">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\favicon.ico">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\emotes\404.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\emotes\genshin-impact-emote.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\logo\stech-logo-colors.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\logo\stech-logo-mobile.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\logo\stech-logo-text-color.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\logo\stech-logo.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\wwwroot\images\no-image.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.21.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
+    <PackageReference Include="itext" Version="8.0.5" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+    <PackageReference Include="Stripe.net" Version="45.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\wwwroot\images\icons\" />
+    <Folder Include="wwwroot\images\logo\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DataFiles\Address\cities.json" />
+    <None Include="DataFiles\Address\districts.json" />
+    <None Include="DataFiles\Address\wards.json" />
+    <None Include="wwwroot\js\address.js" />
+    <None Include="wwwroot\js\order.js" />
+    <None Include="wwwroot\js\product.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\STech.Data\STech.Data.csproj" />
+    <ProjectReference Include="..\STech.Services\STech.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Shared\PartialViews\ProductBox_MVM.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Shared\PartialViews\User_UpdateAddress.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

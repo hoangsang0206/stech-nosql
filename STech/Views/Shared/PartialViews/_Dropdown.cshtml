@@ -1,0 +1,28 @@
+﻿@model Dropdown
+
+<div class="page-dropdown position-relative @Model.ClassName @(Model.IsDisabled ? "dropdown-disabled" : "") @(Model.Items.Any(i => i.IsSelected) ? "active" : "")"
+    id="@Model.Id"
+    data-selected="@Model.Items.Where(i => i.IsSelected).FirstOrDefault()?.Value">
+
+    <a href="javascript:" class="dropdown-button d-flex align-items-center gap-2">
+        @Html.Raw(Model.IconElement)
+        <span>@Model.Text</span>
+        @if(Model.IsHasDropdownArrow)
+        {
+            <i class="fa-solid fa-chevron-down"></i>
+        }
+    </a>
+
+    <div class="page-dropdown-content position-absolute" style="@(Model.IsHasContentAtRight ? "right: 0;" : "left: 0;")">
+        <div class="page-dropdown-items-container">
+            @foreach (Dropdown.DropdownItem item in Model.Items)
+            {
+                <a href="javascrip:" class="page-dropdown-item d-flex align-items-center gap-2 @(item.IsSelected ? "selected" : "")"
+                   style="padding: .2rem" data-item="@item.Value">
+                    @Html.Raw(item.IconElement)
+                    <span>@item.Text</span>
+                </a>
+            }
+        </div>
+    </div>
+</div>

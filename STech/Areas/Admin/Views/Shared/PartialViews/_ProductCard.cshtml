@@ -1,0 +1,53 @@
+﻿@model Product
+
+@{
+    string imageUrl = Model.ProductImages.FirstOrDefault()?.ImageSrc ?? "/admin/images/no-image.jpg";
+    int total_qty = Model.WarehouseProducts.Sum(x => x.Quantity);
+
+    string status_badge = "<span class=\"page-badge badge-success\">Còn hàng</span>";
+
+    if(Model.IsDeleted == true)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Đã xóa</span>";
+    }
+    else if(!Model.IsActive == true)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Chưa kích hoạt</span>";
+    }
+    else if (total_qty <= 0)
+    {
+        status_badge = "<span class=\"page-badge badge-error\">Hết hàng</span>";
+    }
+    else if (total_qty <= 5)
+    {
+        status_badge = "<span class=\"page-badge badge-warning\">Sắp hết hàng</span>";
+    }
+}   
+
+<div class="product-card">
+    <div class="product-card__image lazy-loading">
+        <img lazy-src="@imageUrl" alt="">
+    </div>
+
+    <div class="product-card__info">
+        <p class="product-card__name text-overflow-2 text-product-name mb-2">@Model.ProductName</p>
+        <p class="product-card__price text-price">@CurrencyFormatter.Format(Model.Price)</p>
+    </div>
+
+    <div class="product-card__actions d-flex gap-1 align-items-center justify-content-end">
+        <div class="flex-grow-1">
+            @Html.Raw(status_badge)
+        </div>
+
+        <a href="/admin/products/1/@Model.ProductId" class="page-btn-small btn-lightblue">
+            <i class="fa-regular fa-pen-to-square"></i>
+        </a>
+
+        @if(Model.IsDeleted != true)
+        {
+            <button class="delete-product page-btn-small btn-red" data-product="@Model.ProductId">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        }
+    </div>
+</div>

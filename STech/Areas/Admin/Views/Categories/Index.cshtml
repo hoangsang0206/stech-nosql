@@ -1,0 +1,92 @@
+﻿@model IEnumerable<CategoryMVM>
+
+@{
+    ViewData["Title"] = "Quản lý danh mục - STech";
+    ViewData["PageTitle"] = "Quản lý danh mục";
+}
+
+<section class="page-wrapper">
+    <div>
+        <div class="mb-3">
+            <a href="javascript:" class="page-btn btn-border-only click-add-category">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm</span>
+            </a>
+        </div>
+
+        <div>
+            <div class="page-table-wrapper mt-2">
+                <table class="page-table order-list">
+                    <thead class="page-table-header">
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="page-table-checkbox-all" />
+                            </th>
+                            <th>STT</th>
+                            <th>Mã danh mục</th>
+                            <th>Hình</th>
+                            <th>Tên danh mục</th>
+                            <th>Số sản phẩm</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="category-list">
+                        @{
+                            int category_page = ViewBag.CurrentPage ?? 1;
+                            int category_index = (category_page - 1) * 30 + 1;
+
+                            foreach (CategoryMVM category in Model)
+                            {
+                                <tr data-item="@category.CategoryId">
+                                    <td>
+                                        <input type="checkbox" name="page-table-checkbox" value="@category.CategoryId" />
+                                    </td>
+                                    <td>
+                                        @category_index
+                                    </td>
+                                    <td>
+                                        @category.CategoryId
+                                    </td>
+                                    <td>
+                                        <div class="lazy-loading">
+                                            <img lazy-src="@category.ImageSrc" alt="" style="width: 3rem">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-overflow-1">@category.CategoryName</span>
+                                    </td>
+                                    <td>
+                                        @category?.Products?.Count()
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1 align-items-center justify-content-end">
+                                            <button class="page-table-btn btn-lightblue edit-category" data-category="@category.CategoryId">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </button>
+                                            <button class="page-table-btn btn-red delete-category" data-category="@category.CategoryId">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                category_index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @await Html.PartialAsync("PartialViews/_Pagination", new Tuple<int, int>(ViewBag.CurrentPage ?? 1, ViewBag.TotalPages ?? 1))
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("PartialViews/Form_Category")
+
+@section Styles {
+    
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/admin/js/categories.js"></script>
+}

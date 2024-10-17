@@ -1,0 +1,318 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm - STech";
+    ViewData["PageTitle"] = "Quản lý sản phẩm";
+
+    IEnumerable<Warehouse> warehouses = ViewBag.Warehouses;
+    IEnumerable<Category> categories = ViewBag.Categories;
+    IEnumerable<Brand> brands = ViewBag.Brands;
+
+    int deleted = Model.Where(p => p.IsDeleted == true).Count();
+    int inActive = Model.Where(p => p.IsActive != true && p.IsDeleted != true).Count();
+    int activated = Model.Where(p => p.IsActive == true).Count();
+}
+
+<section class="page-wrapper">
+
+    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+        <div class="filters-box flex-wrap">
+            <div class="filter-item filter-all">
+                <div class="filter-btn">
+                    <i class="fa-solid fa-filter"></i>
+                    <span>Lọc theo</span>
+                </div>
+
+                <div class="filter-contents">
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4">
+                        <div>
+                            <p class="filter-content-header">Giá</p>
+
+                            <div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="filter-content-header">Tình trạng</p>
+
+                            <div class="display-grid columns-3">
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                         new Tuple<string, string, string, string>("stt_in-stock", "stt_filter-status", "in-stock", "Còn hàng"))
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                    new Tuple<string, string, string, string>("stt_out-of-stock-soon", "stt_filter-status", "out-of-stock-soon", "Sắp hết hàng"))
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio", 
+                                    new Tuple<string, string, string, string>("stt_out-of-stock", "stt_filter-status", "out-of-stock", "Hết hàng"))
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                    new Tuple<string, string, string, string>("stt_inactive", "stt_filter-status", "inactive", "Chưa kích hoạt"))
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                    new Tuple<string, string, string, string>("stt_activated", "stt_filter-status", "activated", "Đã kích hoạt"))
+
+                                @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                    new Tuple<string, string, string, string>("stt_deleted", "stt_filter-status", "deleted", "Đã xóa"))
+
+                                <input type="radio" value="" id="stt_filter-status-all" name="stt_filter-status" hidden />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap flex-lg-nowrap gap-4">
+                        <div>
+                            <p class="filter-content-header">Danh mục</p>
+
+                            <div class="display-grid columns-4">
+                                @foreach (Category category in categories)
+                                {
+                                    @await Html.PartialAsync("PartialViews/FilterItems/FilterCheckbox",
+                                             new Tuple<string, string, string, string>($"cate_{category.CategoryId}", "filter-category", category.CategoryId, category.CategoryName))
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="filter-content-header">Hãng</p>
+
+                            <div class="display-grid columns-4">
+                                @foreach (Brand brand in brands)
+                                {
+                                    @await Html.PartialAsync("PartialViews/FilterItems/FilterCheckbox",
+                                             new Tuple<string, string, string, string>($"brand_{brand.BrandId}", "filter-brand", brand.BrandId, brand.BrandName))
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @await Html.PartialAsync("PartialViews/FilterItems/FilterActions")
+
+                </div>
+            </div>
+
+            <div class="filter-item filter-price-range">
+                <div class="filter-btn">
+                    <span>Giá</span>
+                </div>
+
+                <div class="filter-contents">
+
+
+                    @await Html.PartialAsync("PartialViews/FilterItems/FilterActions")
+
+                </div>
+            </div>
+
+            <div class="filter-item filter-categories">
+                <div class="filter-btn">
+                    <span>Danh mục</span>
+                </div>
+
+                <div class="filter-contents">
+                    <div class="display-grid columns-3">
+                        @foreach (Category category in categories)
+                        {
+                            @await Html.PartialAsync("PartialViews/FilterItems/FilterCheckbox",
+                                     new Tuple<string, string, string, string>($"f_cate_{category.CategoryId}", "filter-category", category.CategoryId, category.CategoryName))
+                        }
+                    </div>
+
+                    @await Html.PartialAsync("PartialViews/FilterItems/FilterActions")
+
+                </div>
+            </div>
+
+            <div class="filter-item filter-brands">
+                <div class="filter-btn">
+                    <span>Hãng</span>
+                </div>
+
+                <div class="filter-contents">
+                    <div class="display-grid columns-4">
+                        @foreach (Brand brand in brands)
+                        {
+                            @await Html.PartialAsync("PartialViews/FilterItems/FilterCheckbox",
+                                     new Tuple<string, string, string, string>($"f_brand_{brand.BrandId}", "filter-brand", brand.BrandId, brand.BrandName))
+                        }
+                    </div>
+
+                    @await Html.PartialAsync("PartialViews/FilterItems/FilterActions")
+
+                </div>
+            </div>
+
+            <div class="filter-item filter-status">
+                <div class="filter-btn">
+                    <span>Tình trạng</span>
+                </div>
+
+                <div class="filter-contents">
+                    <div class="display-grid columns-2">
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("in-stock", "filter-status", "in-stock", "Còn hàng"))
+
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("out-of-stock-soon", "filter-status", "out-of-stock-soon", "Sắp hết hàng"))
+
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("out-of-stock", "filter-status", "out-of-stock", "Hết hàng"))
+
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("inactive", "filter-status", "inactive", "Chưa kích hoạt"))
+
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("activated", "filter-status", "activated", "Đã kích hoạt"))
+
+                        @await Html.PartialAsync("PartialViews/FilterItems/FilterRadio",
+                                 new Tuple<string, string, string, string>("deleted", "filter-status", "deleted", "Đã xóa"))
+
+                        <input type="radio" value="" id="filter-status-all" name="filter-status" hidden />
+                    </div>
+
+                    @await Html.PartialAsync("PartialViews/FilterItems/FilterActions")
+
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <div class="page-dropdown select-warehouse">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Không chọn kho</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="" data-text="Không chọn kho">
+                        <span>Không chọn kho</span>
+                    </div>
+                    @foreach (Warehouse wh in warehouses)
+                    {
+                        <div class="page-dropdown-item" data-value="@wh.WarehouseId" data-text="@wh.WarehouseName">
+                            <span>@wh.WarehouseName</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="page-dropdown sort-selection">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Sắp xếp theo</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="" data-text="Sắp xếp theo">
+                        <span>Sắp xếp theo</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="price-ascending" data-text="Giá tăng dần">
+                        <span>Giá tăng dần</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="price-descending" data-text="Giá giảm dần">
+                        <span>Giá giảm dần</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="name-az" data-text="Tên A - Z">
+                        <span>Tên A - Z</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="name-za" data-text="Tên Z - A">
+                        <span>Tên Z - A</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-dropdown view-selection">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Dạng xem</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="view-list" data-text="Danh sách">
+                        <span>Danh sách</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="view-grid" data-text="Lưới">
+                        <span>Lưới</span>
+                    </div>
+                </div>
+            </div>
+
+            @await Html.PartialAsync("PartialViews/_PageSearchForm", new Tuple<string, string, string>("search-products", "Tìm theo mã/tên sản phẩm", ViewBag.SearchValue))
+        </div>
+    </div>
+
+    <div class="hidden-action mt-2">
+        <button class="page-btn btn-red delete-selected-products @(deleted == Model.Count() ? "d-none" : "")">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Xóa sản phẩm đã chọn</span>
+        </button>
+
+        <button class="page-btn btn-lightblue restore-selected-products @(deleted == Model.Count() ? "" : "d-none")">
+            <i class="fa-solid fa-trash-can-arrow-up"></i>
+            <span>Khôi phục sản phẩm đã chọn</span>
+        </button>
+
+        <button class="page-btn btn-green activate-selected-products @(activated == Model.Count() || deleted == Model.Count() ? "d-none" : "")">
+            <i class="fa-regular fa-circle-check"></i>
+            <span>Kích hoạt sản phẩm đã chọn</span>
+        </button>
+
+        <button class="page-btn btn-blue deactivate-selected-products @(inActive == Model.Count() || deleted == Model.Count() ? "d-none" : "")">
+            <i class="fa-regular fa-circle-xmark"></i>
+            <span>Hủy kích hoạt sản phẩm đã chọn</span>
+        </button>
+        
+    </div>
+
+    @if(ViewBag.ViewType == "view-grid")
+    {
+        <div class="product-list view-grid mt-4" data-view="view-grid">
+            @foreach (Product product in Model)
+            {
+                @await Html.PartialAsync("PartialViews/_ProductCard", product)
+            }
+        </div>
+    }
+    else
+    {
+        <div class="page-table-wrapper mt-2">
+            <table class="page-table order-list">
+                <thead class="page-table-header">
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="page-table-checkbox-all" />
+                        </th>
+                        <th>STT</th>
+                        <th>Hình</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá so sánh</th>
+                        <th>Giá bán</th>
+                        <th>Trạng thái</th>
+                        <th>Tồn kho</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="product-list view-list" data-view="view-list">
+                    @{
+                        int page = ViewBag.CurrentPage ?? 1;
+                        int index = (page - 1) * 40 + 1;
+
+                        foreach (Product product in Model)
+                        {
+                            @await Html.PartialAsync("PartialViews/_ProductListItem", new Tuple<Product, int>(product, index))
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="empty-message mt-5 mb-5 d-flex align-items-center justify-content-center @(Model.Count() <= 0 ? "" : "d-none")">
+        <p>Không tìm thấy sản phẩm nào</p>
+    </div>
+
+    @await Html.PartialAsync("PartialViews/_Pagination", new Tuple<int, int>(ViewBag.CurrentPage, ViewBag.TotalPages))
+
+</section>
+
+@section Scripts {
+    <script src="~/admin/js/products.js"></script>
+}

@@ -1,0 +1,211 @@
+﻿@{
+    ViewData["Title"] = "Quản lý đánh giá sản phẩm - STech Admin";
+    ViewData["PageTitle"] = "Quản lý đánh giá sản phẩm";
+}
+
+@model IEnumerable<ReviewMVM>
+
+<section class="page-wrapper" data-current-user="@(User.FindFirst("Id")?.Value)">
+    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+        <div class="d-flex gap-2 flex-wrap">
+            <button class="page-btn-reload reload-page-data">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+
+            <div class="page-dropdown sort-selection">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Sắp xếp theo</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="" data-text="Sắp xếp theo">
+                        <span>Sắp xếp theo</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="rating-ascending" data-text="Số sao tăng dần">
+                        <span>Số sao tăng dần</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="rating-descending" data-text="Số sao giảm dần">
+                        <span>Số sao giảm dần</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="newest" data-text="Mới nhất">
+                        <span>Mới nhất</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="oldest" data-text="Cũ nhất">
+                        <span>Cũ nhất</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-dropdown status-selection">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Trạng thái</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="" data-text="Trạng thái">
+                        <span>Trạng thái</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="not-approved" data-text="Chưa duyệt">
+                        <span>Chưa duyệt</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="approved" data-text="Đã duyệt">
+                        <span>Đã duyệt</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-dropdown filter-selection">
+                <div class="page-dropdown-btn" data-selected="">
+                    <span>Số sao</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </div>
+                <div class="page-dropdown-content">
+                    <div class="page-dropdown-item" data-value="" data-text="Số sao">
+                        <span>Số sao</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="5-stars" data-text="5 sao">
+                        <span>5 sao</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="4-stars" data-text="4 sao">
+                        <span>4 sao</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="3-stars" data-text="3 sao">
+                        <span>3 sao</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="2-stars" data-text="2 sao">
+                        <span>2 sao</span>
+                    </div>
+                    <div class="page-dropdown-item" data-value="1-star" data-text="1 sao">
+                        <span>1 sao</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("PartialViews/_PageSearchForm", new Tuple<string, string, string>("search-reviews", "Tìm đánh giá theo mã/tên sản phẩm", ViewBag.SearchValue))
+    </div>
+
+    <div class="review-list mt-3">
+        @foreach(ReviewMVM review in Model)
+        {
+            <div class="review-item">
+                <div class="mb-1 d-flex gap-3 align-items-center justify-content-between">
+                    <div class="d-flex gap-3 align-items-center">
+                        @{
+                            string reviewerName = review.User?.FullName ?? review.ReviewerName ?? "Không có tên";
+                            string reviewerAvatar = review.User?.Avatar ?? "/admin/images/user-no-image.svg";
+                            int notReadCount = review.ReviewReplies.Count(r => r.IsRead != true);
+
+                            <div class="reviewer-avatar">
+                                <img src="@reviewerAvatar" style="width: 2rem" alt="" />
+                            </div>
+
+                            <span class="fweight-500">
+                                @reviewerName
+                            </span>
+
+                            @if(review.IsPurchased == true)
+                            {
+                                <span style="padding: .05rem .6rem" class="page-badge badge-success">Đã mua sản phẩm này</span>
+                            }
+                            else
+                            {
+                                <span style ="padding: .05rem .6rem" class="page-badge badge-warning">Chưa mua sản phẩm này</span>
+                            }
+                        }
+                    </div>
+                    <div>
+                        <span style="font-size: .85rem" class="text-secondary">@review.CreateAt.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                </div>
+
+                <div class="ps-3" style="margin-left: 2rem">
+                    <div class="d-flex gap-3 align-items-center">
+                        @await Html.PartialAsync("PartialViews/Review_StarGroup", review.Rating)
+
+                        <span class="fweight-600">"@review.Content"</span>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-center justify-content-between mt-2">
+                        <div>
+                            <span style="font-size: .87rem">
+                                <span class="text-secondary">Đã đánh giá</span>
+                                <a class="text-decoration-none review-product-name" href="/admin/reviews/product/@review.ProductId">@review?.Product?.ProductName</a>
+                            </span>
+                        </div>
+
+                        <div class="d-flex gap-1 align-items-stretch">
+                            <div class="d-flex align-items-center">
+                                <span class="me-3">(@review?.ReviewImages.Count() hình ảnh)</span>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <span class="me-3">(@review?.ReviewReplies.Count() phản hồi)</span>
+                            </div>
+
+                            <button class="page-btn btn-red delete-review" data-review="@review?.Id" data-product="@review?.ProductId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+
+                            <a href="/admin/reviews/1/@review.Id" class="page-btn btn-blue view-review">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </a>
+
+                            <button class="page-btn btn-lightblue view-review-replies position-relative" data-review="@review.Id">
+                                <i class="fa-regular fa-comment-dots"></i>
+
+                                @if(notReadCount > 0)
+                                {
+                                    <span class="review-replies-count position-absolute">
+                                        @notReadCount
+                                    </span>
+                                }
+                            </button>
+
+                            @if(review.IsProceeded != true)
+                            {
+                                <button class="page-btn btn-green approve-review" data-review="@review.Id" data-product="@review?.ProductId">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @await Html.PartialAsync("PartialViews/_Pagination", new Tuple<int, int>(ViewBag.CurrentPage, ViewBag.TotalPages))
+
+</section>
+
+<div class="form-container reply-review">
+    <div class="form-box d-flex flex-column" style="width: 50rem; height: 50rem;">
+        <div class="d-flex">
+            <div class="review flex-grow-1">
+            </div>
+
+            <div>
+                <button class="page-btn-reload reload-replies">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="review-replies flex-grow-1">
+
+        </div>
+
+        @await Html.PartialAsync("PartialViews/Form_ReviewReply", new ReviewReplyVM())
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/css/reviews.css" />
+}
+
+@section Scripts {
+    <script src="~/admin/js/reviews.js"></script>
+}

@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Menu>
+
+<div class="sidebar">
+    @{
+        if (Model.Count() > 0)
+        {
+            <ul class="megamenu">
+                @foreach (Menu menuItem in Model)
+                {
+                    <li class="megamenu-item">
+                        <div class="megamenu-item-box">
+                            <a href="@menuItem.RedirectUrl" class="megamenu-link">
+                                @Html.Raw(menuItem.MenuIcon)
+                                @menuItem.MenuName
+                            </a>
+                            <i class="fa-solid fa-chevron-right megamenu-chevron"></i>
+                        </div>
+                        <div class="megamenu-content">
+                            @{
+                                IEnumerable<MenuLevel1> menuLevel1 = menuItem.MenuLevel1s.ToList();
+                                if (menuLevel1.Count() <= 0)
+                                {
+                                    <div class="megamenu-content-item">
+                                        <a href="#" class="megamenu-item-title">Đang cập nhật...</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    foreach (MenuLevel1 menuLvl1Item in menuLevel1)
+                                    {
+                                        IEnumerable<MenuLevel2> menuLevel2 = menuLvl1Item.MenuLevel2s.ToList();
+                                        <div class="megamenu-content-item">
+                                            <div class="sub-megamenu-box d-flex align-items-center justify-content-between">
+                                                <a href="@menuLvl1Item.RedirectUrl" class="megamenu-item-title">@menuLvl1Item.MenuName</a>
+                                                <i class="fa-solid fa-chevron-right megamenu-chevron"></i>
+                                            </div>
+                                            <ul class="megamenu-item-list">
+                                                @foreach (MenuLevel2 menuLvl2Item in menuLevel2)
+                                                {
+                                                    <li class="megamenu-item-list-link">
+                                                        <a href="@menuLvl2Item.RedirectUrl">@menuLvl2Item.MenuName</a>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+
+    }
+</div>

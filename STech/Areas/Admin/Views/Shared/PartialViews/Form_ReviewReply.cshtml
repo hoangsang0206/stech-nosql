@@ -1,0 +1,18 @@
+﻿@model ReviewReplyVM
+
+<form class="post-reply" data-review="@Model.ReviewId">
+    <div>
+        <textarea asp-for="@Model.Content" id="txt-reply" placeholder="Gửi phản hồi"></textarea>
+        <span asp-validation-for="@Model.Content"></span>
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+        <button type="reset" class="form-reset-btn">
+            Đóng
+        </button>
+
+        <button type="submit" class="form-submit-btn page-btn-sm flex-btn ">
+            <span>Gửi</span>
+            <i class="fa-regular fa-paper-plane"></i>
+        </button>
+    </div>
+</form>

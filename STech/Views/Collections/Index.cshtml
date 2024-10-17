@@ -1,0 +1,39 @@
+﻿@model Tuple<IEnumerable<Product>, List<Breadcrumb>>
+
+
+@await Html.PartialAsync("PartialViews/Breadcrumb", Model.Item2)
+
+<section class="page-container">
+    @if (Model.Item1.Count() <= 0)
+    {
+        <div class="filter-error mt-3 mb-5 px-3 d-flex flex-column align-items-center justify-content-center">
+            <p class="text-center">
+                Có thể các sản phẩm này chưa được cập nhật hoặc đã hết hàng, vui lòng chọn danh mục sản phẩm khác
+            </p>
+            <button class="to-home-page-btn" onclick="window.location.href='/'">
+                QUAY LẠI TRANG CHỦ
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="filter-box d-flex justify-content-between mt-2 mb-3 gap-2">
+
+
+
+            @await Html.PartialAsync("PartialViews/Sort")
+        </div>
+
+        <div class="product-list">
+            @foreach (Product product in Model.Item1)
+            {
+                @await Html.PartialAsync("PartialViews/ProductBox", product)
+            }
+        </div>
+    }
+
+    @await Html.PartialAsync("PartialViews/Pagination")
+
+</section>
+
+<section class="side-overlay"></section>

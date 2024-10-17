@@ -1,0 +1,215 @@
+﻿.account-sidebar {
+    background: var(--content-color-white);
+    padding-right: 1rem;
+}
+
+    .account-sidebar * {
+        font-size: 1.1rem;
+    }
+
+    .account-sidebar ul {
+        list-style-type: none;
+    }
+
+    .account-sidebar a {
+        padding: 0.5rem;
+        margin-bottom: 0.2rem;
+        text-decoration: inherit;
+        color: var(--content-color-black);
+        border-radius: var(--radius);
+    }
+
+        .account-sidebar a:hover,
+        .account-sidebar a.active {
+            background:var(--primary-color);
+            color: var(--content-color-white);
+        }
+
+    .account-sidebar i {
+        width: 2rem;
+        display: grid;
+        place-items: center;
+        font-size: 1.3rem;
+    }
+
+.account-content-wrapper {
+    border-left: 1px solid #ccc;
+    height: 100%;
+    position: relative;
+}
+
+.account-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(0);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.account-content.current {
+    position: static;
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .5s ease;
+}
+
+.account-content-box {
+    width: 100%;
+    max-height: 40rem;
+}
+
+
+.user-image {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-image img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.click-change-image {
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: #eaeaea;
+    cursor: pointer;
+
+    bottom: 0rem;
+    right: -0.3rem;
+}
+
+    .click-change-image i {
+        font-size: 1rem;
+        color: #0652DD;
+    }
+
+.user-infomation .user-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.user-infomation .user-fullname,
+.user-infomation .user-email {
+    color: #858585;
+}
+
+.upload-image .form-box {
+    width: 30rem;
+}
+
+.preview-image-wrapper {
+    display: none;
+}
+
+.preview-image-wrapper.show {
+    display: flex;
+}
+
+#preview-image {
+    width: 20rem;
+    aspect-ratio: 1;
+}
+
+.drag-and-click-upload-image {
+    border: 2px dashed #3FA2F6;
+    border-radius: 0.5rem;
+    color: #3FA2F6;
+    width: 20rem;
+    aspect-ratio: 1;
+    cursor: pointer;
+}
+
+    .drag-and-click-upload-image.hide {
+        display: none !important;
+    }
+
+    .drag-and-click-upload-image i {
+        font-size: 2rem;
+    }
+
+
+    .drag-and-click-upload-image:hover,
+    .drag-and-click-upload-image.active {
+        border-color: #96C9F4;
+        color: #96C9F4;
+    }
+
+#image-to-edit {
+    max-width: 100%;
+    max-height: 40rem;
+}
+
+.click-choose-image {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--content-color-white);
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.2rem;
+    background: #3FA2F6;
+    border: none;
+
+}
+
+.add-address .form-box,
+.update-address .form-box {
+    width: 35rem;
+}
+
+.address-type {
+    padding: 0.6rem;
+    border-radius: var(--radius);
+    border: 1px solid #cfcfcf;
+    color: var(--content-color-black);
+    text-decoration: none;
+}
+
+input[name="address-type"]:checked ~ label > .address-type {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.address-default {
+    padding: 0.2rem 0.3rem;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--radius);
+    white-space: nowrap;
+}
+
+
+@media screen and (max-width: 576px) {
+    .account-content-wrapper {
+        border: none;
+    }
+
+    .account-sidebar {
+        padding-right: 0;
+    }
+
+    .account-sidebar > ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .5s ease;
+    }
+
+        .account-sidebar > ul.show {
+            position: static;
+            opacity: 0;
+            visibility: visible;
+            opacity: 1;
+        }
+}

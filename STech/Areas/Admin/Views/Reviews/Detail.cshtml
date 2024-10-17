@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết đánh giá - STech Admin";
+    ViewData["PageTitle"] = "Chi tiết đánh giá";
+}
+
+@model Tuple<ReviewMVM, ProductMVM?>
+
+@{
+    ReviewMVM review = Model.Item1;
+    ProductMVM? product = Model.Item2;
+
+    string reviewerName = review.User?.FullName ?? review.ReviewerName ?? "Không có tên";
+    string reviewerAvatar = review.User?.Avatar ?? "/admin/images/user-no-image.svg";
+    bool isAnonymous = review.User == null;
+
+    string reviewerEmail = review.User?.Email ?? review.ReviewerEmail ?? "--";
+    string reviewerPhone = review.User?.Phone ?? review.ReviewerPhone ?? "--";
+
+    string? currentUser = User.FindFirst("Id")?.Value;
+}
+
+<section>
+    <div class="row p-0 m-0">
+        <div class="col-12 col-lg-8 p-0">
+            <div class="page-content-box no-border">
+                @await Html.PartialAsync("PartialViews/Review_StarGroup", review.Rating)
+
+                <div class="fweight-600 mt-3">
+                    @review.Content
+                </div>
+
+                <div class="d-flex flex-wrap align-items-start gap-2 mt-3">
+                    @foreach (ReviewImage img in review.ReviewImages)
+                    {
+                        <img src="@img.ImageUrl" alt="" style="max-width: 10rem; min-width: 5rem; max-height: 10rem"/>
+                    }
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Phản hồi đánh giá
+                </div>
+
+                <hr />
+
+                <div>
+                    <div class="review-replies" style="max-height: 30rem">
+                        @foreach(ReviewReplyMVM reply in review.ReviewReplies)
+                        {
+                            <div class="mb-4 d-flex gap-3 @(reply.UserReply?.UserId == currentUser ? "flex-row-reverse" : "justify-content-start")">
+                                <div class="reviewer-avatar" style="margin-top: 1.3rem">
+                                    <img src="@(reply.UserReply?.Avatar ?? "/admin/images/user-no-image.svg")" alt="" />
+                                </div>
+                                <div style="max-width: 100%">
+                                    <div style="font-size: .85rem" class="@(reply.UserReply?.UserId == currentUser ? "text-end" : "")">@reply.UserReply.FullName</div>
+                                    <div class="review-reply-box">
+                                        <span>@reply.Content</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    @await Html.PartialAsync("PartialViews/Form_ReviewReply", new ReviewReplyVM
+                    {
+                        ReviewId = review.Id
+                    })
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-lg-4 p-0 ps-lg-4">
+            <div class="position-sticky top-0 start-0 mt-3 mt-lg-0">
+                <div class="page-content-box no-border">
+                    <div class="page-content-header">
+                        Người đánh giá
+                    </div>
+
+                    <div>
+                        <div class="d-flex gap-3 flex-wrap align-items-center">
+                            @{
+                                <div class="reviewer-avatar">
+                                    <img src="@reviewerAvatar" style="width: 3rem; height: 3rem" alt="" />
+                                </div>
+
+                                <span class="fweight-500">
+                                    @reviewerName
+                                </span>
+
+                                @if (review.IsPurchased == true)
+                                {
+                                    <span style="padding: .05rem .6rem" class="page-badge badge-success">Đã mua sản phẩm này</span>
+                                }
+                                else
+                                {
+                                    <span style="padding: .05rem .6rem" class="page-badge badge-warning">Chưa mua sản phẩm này</span>
+                                }
+
+                                @if (isAnonymous)
+                                {
+                                    <span style="padding: .05rem .6rem" class="page-badge">Ẩn danh</span>
+                                }
+                            }
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center gap-4">
+                                <span>
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <span>
+                                    @reviewerEmail
+                                </span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-4">
+                                <span>
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <span>
+                                    @reviewerPhone
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content-box no-border mt-3">
+                    <div class="page-content-header">
+                        Sản phẩm đánh giá
+                    </div>
+
+                    <div>
+                        <div class="d-flex gap-2">
+                            <img src="@(product?.ProductImages.FirstOrDefault()?.ImageSrc ?? "/admin/images/no-image.jpg")" alt="" style="width: 4rem" />
+
+                            <div>
+                                <span class="text-product-name">@product?.ProductName</span>
+                                <span class="text-price">@CurrencyFormatter.Format(product?.Price)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link href="~/admin/css/reviews.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/admin/js/reviews.js"></script>
+
+    <script>
+        $('.review-replies').scrollTop($('.review-replies').prop("scrollHeight"));
+    </script>
+}

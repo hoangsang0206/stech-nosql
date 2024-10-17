@@ -1,0 +1,64 @@
+﻿@{
+    BrandVM brand = new BrandVM();
+}
+
+<div class="form-container form-brand">
+    <div class="form-box" style="width: 35rem">
+        <div class="form-header-wrapper">
+            <div class="form-header">Cập nhật hãng</div>
+            <div class="close-form">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <form data-action="update">
+            <div class="page-input-box">
+                <label>Mã hãng</label>
+                <div class="page-input">
+                    <input asp-for="@brand.BrandId" type="text" id="brand_id" placeholder="Nhập mã hãng" />
+                </div>
+                <span asp-validation-for="@brand.BrandId"></span>
+            </div>
+            <div class="page-input-box">
+                <label>Tên hãng</label>
+                <div class="page-input">
+                    <input asp-for="@brand.BrandName" type="text" id="brand_name" placeholder="Nhập tên hãng" />
+                </div>
+                <span asp-validation-for="@brand.BrandName"></span>
+            </div>
+            <div class="page-input-box">
+                <label>Địa chỉ</label>
+                <div class="page-input">
+                    <input asp-for="@brand.Address" type="text" id="brand_address" placeholder="Nhập địa chỉ hãng" />
+                </div>
+                <span asp-validation-for="@brand.BrandName"></span>
+            </div>
+            <div class="page-input-box">
+                <label>Số điện thoại</label>
+                <div class="page-input">
+                    <input asp-for="@brand.Phone" type="text" id="brand_phone" placeholder="Nhập số điện thoại hãng" />
+                </div>
+                <span asp-validation-for="@brand.Phone"></span>
+            </div>
+
+            <div>
+                <input type="file" id="brand_image" accept="image/*" hidden />
+                <div class="preview-image-box" style="aspect-ratio: auto; max-width: 10rem">
+                    <img src="~/admin/images/no-image.jpg" alt="" />
+                </div>
+
+                <div class=" d-inline-block mt-2">
+                    <a href="javascript:" class="click-upload-brand-logo page-btn btn-blue d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <span>Tải lên logo hãng</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-btn-wrapper">
+                <button type="submit" class="form-submit-btn page-btn-sm">Cập nhật</button>
+                <button type="reset" class="form-reset-btn">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>

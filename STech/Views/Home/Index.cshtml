@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ - STech";
+}
+
+@model Tuple<IEnumerable<Category>, IEnumerable<Brand>, IEnumerable<CategoryMVM>, IEnumerable<Slider>>
+
+@{
+    IEnumerable<Category> categories = Model.Item1;
+    IEnumerable<Brand> brands = Model.Item2;
+    IEnumerable<CategoryMVM> randomCategories = Model.Item3;
+    IEnumerable<Slider> sliders = Model.Item4;
+}
+
+<section class="menu">
+    @await Component.InvokeAsync("Menu")
+    <div class="slider">
+        @if(sliders.Count() > 0)
+        {
+            Slider firstSlider = sliders.FirstOrDefault() ?? new Slider();
+            <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    @for (int i = 1; i < sliders.Count(); i++)
+                    {
+                        <button type="button" data-bs-target="#carouselExampleFade" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                    }
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <a href="@firstSlider.RedirectUrl">
+                            <img src="@firstSlider.SliderImgSrc" class="d-block w-100" alt="">
+                        </a>
+                    </div>
+                    @for (int i = 1; i < sliders.Count(); i++)
+                    {
+                        <div class="carousel-item">
+                            <a href="@sliders.ElementAt(i).RedirectUrl">
+                                <img src="@sliders.ElementAt(i).SliderImgSrc" class="d-block w-100" alt="">
+                            </a>
+                        </div>
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="policy">
+    <div class="policy-item">
+        <i class="fa-solid fa-truck-fast policy-icon"></i>
+        <div class="policy-content-box">
+            <div class="policy-content">Đảm bảo đúng hẹn</div>
+            <div class="sub-policy-content">Hoàn lại tiền trong 30 ngày</div>
+        </div>
+    </div>
+    <div class="policy-item">
+        <i class="fa-solid fa-wallet policy-icon"></i>
+        <div class="policy-content-box">
+            <div class="policy-content">Miến phí vận chuyển</div>
+            <div class="sub-policy-content">Cho đơn hàng trong bán kính 5km</div>
+        </div>
+    </div>
+    <div class="policy-item">
+        <i class="fa-solid fa-comments policy-icon"></i>
+        <div class="policy-content-box">
+            <div class="policy-content">Hỗ trợ trực tuyến</div>
+            <div class="sub-policy-content">Chúng tôi hỗ trợ 24/24</div>
+        </div>
+    </div>
+    <div class="policy-item">
+        <i class="fa-solid fa-gift policy-icon"></i>
+        <div class="policy-content-box">
+            <div class="policy-content">Khuyến mãi</div>
+            <div class="sub-policy-content">Nhiều khuyến mãi hấp dẫn</div>
+        </div>
+    </div>
+</section>
+
+<section class="section-categories">
+    <div class="section-header">
+        <h2 class="section-title">
+            <a href="/collections/all">Danh mục sản phẩm</a>
+        </h2>
+        <div class="section-header-link">
+            <a href="/collections/all">Xem tất cả</a>
+        </div>
+    </div>
+    <div class="section-categories-items">
+        <div class="section-categories-row">
+            @foreach (Category category in categories)
+            {
+                <div class="category-item-box">
+                    <a href="/collections/@category.CategoryId" class="category-item-link">
+                        <div class="category-item">
+                            <div class="category-item-image">
+                                <img src="@category.ImageSrc" alt="" class="category-item-img">
+                            </div>
+                            <span class="category-item-name">
+                                @category.CategoryName
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@foreach (CategoryMVM category in randomCategories)
+{
+    <section class="section-collection">
+        <div class="section-header">
+            <div class="section-header-box">
+                <h2 class="section-title">
+                    <a href="/collections/@category.CategoryId">@category.CategoryName</a>
+                </h2>
+                <div class="section-sub-header-box">
+                    <i class="fa-solid fa-truck"></i>
+                    <span>Miễn phí giao hàng</span>
+                </div>
+            </div>
+            <div class="section-header-link">
+                <a href="/collections/@category.CategoryId">Xem tất cả</a>
+            </div>
+        </div>
+        <div class="section-content">
+            <div class="collection-slick-slider">
+                @foreach (ProductMVM product in category.Products ?? new List<ProductMVM>())
+                {
+                    <div class="slick-slider-item">
+                        @await Html.PartialAsync("PartialViews/ProductBox_MVM", product)
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<section class="section-brands">
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fa-solid fa-circle-check"></i>
+            <a href="#">Thương hiệu nổi bật</a>
+        </h2>
+    </div>
+    <div class="brand-collections">
+        @foreach (Brand brand in brands)
+        {
+            <div class="brand-item">
+                <a href="#">
+                    <img loading="lazy" src="@brand.LogoSrc" alt="@brand.BrandName Logo">
+                </a>
+            </div>
+        }
+    </div>
+</section>

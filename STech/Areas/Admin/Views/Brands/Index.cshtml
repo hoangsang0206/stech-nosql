@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Brand>
+
+@{
+    ViewData["Title"] = "Danh sách hãng hãng - STech";
+    ViewData["PageTitle"] = "Danh sách hãng";
+}
+
+<section class="page-wrapper">
+    <div>
+        <div class="mb-3">
+            <a href="javascript:" class="page-btn btn-border-only click-add-brand">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thêm</span>
+            </a>
+        </div>
+
+        <div>
+            <div class="page-table-wrapper mt-2">
+                <table class="page-table order-list">
+                    <thead class="page-table-header">
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="page-table-checkbox-all" />
+                            </th>
+                            <th>STT</th>
+                            <th>Mã hãng</th>
+                            <th>Logo</th>
+                            <th>Tên hãng</th>
+                            <th>Số điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="category-list">
+                        @{
+                            int brand_page = ViewBag.CurrentPage ?? 1;
+                            int brand_index = (brand_page - 1) * 20 + 1;
+
+                            foreach (Brand brand in Model)
+                            {
+                                <tr data-item="@brand.BrandId">
+                                    <td>
+                                        <input type="checkbox" name="page-table-checkbox" value="@brand.BrandId" />
+                                    </td>
+                                    <td>
+                                        @brand_index
+                                    </td>
+                                    <td>
+                                        @brand.BrandId
+                                    </td>
+                                    <td>
+                                        <div class="lazy-loading">
+                                            <img lazy-src="@brand.LogoSrc" alt="" style="width: 5rem">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-overflow-1">@brand.BrandName</span>
+                                    </td>
+                                    <td>
+                                        @(brand.Phone ?? "--")
+                                    </td>
+                                    <td>
+                                        @(brand.Address ?? "--")
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1 align-items-center justify-content-end">
+                                            <button class="page-table-btn btn-lightblue edit-brand" data-brand="@brand.BrandId">
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </button>
+                                            <button class="page-table-btn btn-red delete-brand" data-brand="@brand.BrandId">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                brand_index++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @await Html.PartialAsync("PartialViews/_Pagination", new Tuple<int, int>(ViewBag.CurrentPage ?? 1, ViewBag.TotalPages ?? 1))
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("PartialViews/Form_Brand")
+
+@section Scripts {
+    <script src="~/admin/js/brands.js"></script>
+}

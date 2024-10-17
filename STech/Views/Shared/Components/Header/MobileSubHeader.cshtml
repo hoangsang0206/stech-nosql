@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Category>
+
+<div class="sub-header">
+    <div class="container-xxl">
+        <ul class="sub-header-item-list d-flex align-items-center">
+            @foreach(Category category in Model)
+            {
+                <li class="sub-header-item">
+                    <a href="/collections/@category.CategoryId" class="sub-header-link">@category.CategoryName</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

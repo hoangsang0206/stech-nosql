@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Tìm kiếm - STech";
+}
+
+@model Tuple<IEnumerable<Product>, List<Breadcrumb>>
+
+@await Html.PartialAsync("PartialViews/Breadcrumb", Model.Item2)
+
+<section class="page-container">
+    <div class="search-value d-flex align-items-center justify-content-center">
+        <h3>
+            Tìm kiếm:
+            <span>@ViewBag.Search</span>
+        </h3>
+    </div>
+    @if (Model.Item1.Count() <= 0)
+    {
+        <div class="search-error d-flex flex-column align-items-center">
+            <div class="error-search-image d-flex justify-content-center">
+                <img src="~/images/emotes/genshin-impact-emote.png" alt="" />
+            </div>
+            <form action="/search" method="get" class="form-search-error d-flex">
+                <input type="search" class="input-search-error" name="q" value="@ViewBag.Search" placeholder="Tìm kiếm" />
+                <button class="submit-search-error" type="submit">Tìm kiếm</button>
+            </form>
+            <div class="error-search-message d-flex flex-column align-items-center">
+                <span>
+                    Rất tiếc, chúng tôi không tìm thấy kết quả cho từ khóa của bạn
+                </span>
+                <span>
+                    Vui lòng kiểm tra chính tả, sử dụng các từ tổng quát hơn và thử lại!
+                </span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="sort-dropdown-box d-flex justify-content-end mb-1">
+            @await Html.PartialAsync("PartialViews/Sort")
+        </div>
+
+        <div class="product-list">
+            @foreach (Product product in Model.Item1)
+            {
+                @await Html.PartialAsync("PartialViews/ProductBox", product)
+            }
+        </div>
+
+        @await Html.PartialAsync("PartialViews/Pagination")
+    }
+
+</section>

@@ -1,0 +1,120 @@
+﻿@model Tuple<ProductMVM?, IEnumerable<Category>, IEnumerable<Brand>>
+
+@{
+    ProductMVM? product = Model.Item1;
+    ProductVM productVM = new ProductVM();
+    IEnumerable<Category> categories = Model.Item2;
+    IEnumerable<Brand> brands = Model.Item3;
+}
+
+<div class="page-input-box">
+    <label>Mã sản phẩm</label>
+    <div class="page-input">
+        @if(product != null) 
+        {
+            <input asp-for="@productVM.ProductId" type="text" id="product_id" placeholder="Nhập mã sản phẩm" value="@product?.ProductId" readonly />
+        }
+        else 
+        {
+            <input asp-for="@productVM.ProductId" type="text" id="product_id" placeholder="Nhập mã sản phẩm" />
+        }
+    </div>
+    <span asp-validation-for="@productVM.ProductId"></span>
+</div>
+
+<div class="page-input-box">
+    <label>Tên sản phẩm</label>
+    <div class="page-input">
+        <input asp-for="@productVM.ProductName" type="text" id="product_name" placeholder="Nhập tên sản phẩm" value="@product?.ProductName" />
+    </div>
+    <span asp-validation-for="@productVM.ProductName"></span>
+</div>
+
+<div class="row m-0 p-0">
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Giá bán</label>
+            <div class="page-input">
+                <input asp-for="@productVM.Price" type="text" id="product_price" placeholder="Nhập giá bán" value="@product?.Price" />
+            </div>
+            <span asp-validation-for="@productVM.Price"></span>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Giá so sánh</label>
+            <div class="page-input">
+                <input asp-for="@productVM.OriginalPrice" type="text" id="product_original_price" placeholder="Nhập giá so sánh" value="@product?.OriginalPrice" />
+            </div>
+            <span asp-validation-for="@productVM.OriginalPrice"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row m-0 p-0">
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Năm sản xuất</label>
+            <div class="page-input">
+                <input asp-for="@productVM.ManufacturedYear" type="text" id="product_manufactured_year" placeholder="Nhập năm sản xuất" value="@product?.ManufacturedYear" />
+            </div>
+            <span asp-validation-for="@productVM.ManufacturedYear"></span>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Thời gian bảo hành (tháng)</label>
+            <div class="page-input">
+                <input asp-for="@productVM.Warranty" type="text" id="product_warranty" placeholder="Nhập thời gian bảo hành" value="@product?.Warranty" />
+            </div>
+            <span asp-validation-for="@productVM.Warranty"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row m-0 p-0">
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Hãng sản xuất</label>
+            <div class="page-input">
+                <select asp-for="@productVM.BrandId" id="product_brand">
+                    <option selected>Chọn hãng sản xuất</option>
+                    @foreach (Brand brand in brands)
+                    {
+                        if (brand.BrandId == product?.BrandId)
+                        {
+                            <option value="@brand.BrandId" selected>@brand.BrandName</option>
+                        }
+                        else
+                        {
+                            <option value="@brand.BrandId">@brand.BrandName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <span asp-validation-for="@productVM.BrandId"></span>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="page-input-box">
+            <label>Danh mục</label>
+            <div class="page-input">
+                <select asp-for="@productVM.CategoryId" id="product_category">
+                    <option selected>Chọn danh mục</option>
+                    @foreach (Category category in categories)
+                    {
+                        if (category.CategoryId == product?.CategoryId)
+                        {
+                            <option value="@category.CategoryId" selected>@category.CategoryName</option>
+                        }
+                        else
+                        {
+                            <option value="@category.CategoryId">@category.CategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <span asp-validation-for="@productVM.CategoryId"></span>
+        </div>
+    </div>
+</div>

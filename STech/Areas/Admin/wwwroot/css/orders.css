@@ -1,0 +1,14 @@
+﻿.order-product-item {
+   border-bottom: 1px solid var(--border-color);
+   padding: .5rem 0 !important;
+}
+
+.order-detail-wrapper {
+    z-index: 30;
+}
+
+.order-detail-box {
+    width: 85rem;
+    height: calc(100% - 2rem);
+
+}

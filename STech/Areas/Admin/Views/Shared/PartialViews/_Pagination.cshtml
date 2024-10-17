@@ -1,0 +1,42 @@
+﻿@model Tuple<int, int>
+
+@{
+    int currentPage = Model.Item1;
+    int totalPages = Model.Item2;
+    int maxPagesToShow = 4;
+}
+
+<div class="d-flex justify-content-end mt-2 w-100">
+    <div class="pagination-box">
+        @if (totalPages > 1)
+        {
+            int startPage = Math.Max(1, currentPage - maxPagesToShow / 2);
+            int endPage = Math.Min(totalPages, startPage + maxPagesToShow - 1);
+
+            if ((endPage - startPage + 1) < maxPagesToShow)
+            {
+                startPage = Math.Max(1, endPage - maxPagesToShow + 1);
+            }
+
+
+            @if (currentPage > 1)
+            {
+                <a href="javascript:void(0)" class="pagination-item" data-page="previous">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a href="javascript:void(0)" class="pagination-item @(i == currentPage ? "current" : "")" data-page="@i">@i</a>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <a href="javascript:void(0)" class="pagination-item" data-page="next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            }
+        }
+    </div>
+</div>

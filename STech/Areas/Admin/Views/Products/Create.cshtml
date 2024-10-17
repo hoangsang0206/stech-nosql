@@ -1,0 +1,129 @@
+﻿@model Tuple<IEnumerable<Category>, IEnumerable<Brand>>
+
+@{
+    ViewData["Title"] = "Tạo sản phẩm - STech";
+    ViewData["PageTitle"] = "Tạo sản phẩm";
+
+    IEnumerable<Category> categories = Model.Item1;
+    IEnumerable<Brand> brands = Model.Item2;
+}
+
+<form id="create-product">
+    <div class="row m-0 p-0">
+        <div class="col-12 col-lg-8 p-0">
+            <div class="page-content-box no-border">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="page-content-header">
+                        Thông tin chung
+                    </div>
+                </div>
+
+                <div class="row p-0 m-0">
+
+                    @await Html.PartialAsync("PartialViews/Product_Infomation",
+                             new Tuple<ProductMVM?, IEnumerable<Category>, IEnumerable<Brand>>(null, categories, brands))
+
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header d-flex justify-content-between">
+                    Hình ảnh
+
+                    <a href="javascript:" class="page-btn btn-border-only click-upload-image">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Thêm</span>
+                    </a>
+
+                    <input type="file" id="upload-product-images" accept="image/*" multiple hidden />
+                </div>
+
+
+                <div class="display-grid columns-5 align-items-start gap-2 product-images-container">
+                    
+                </div>
+            </div>
+
+
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Mô tả ngắn
+                </div>
+
+                <div class="position-relative">
+                    <div id="short-description-editor">
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Mô tả sản phẩm
+                </div>
+
+                <div class="position-relative">
+                    <div id="description-editor">
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border mt-3">
+                <div class="page-content-header">
+                    Thông số kỹ thuật
+                </div>
+
+                <div class="product-specs-container">
+                    <div class="row m-0 p-0">
+                        <div class="col-2 p-0 fw-bold">
+                            Tên thông số
+                        </div>
+                        <div class="col-10 p-0 fw-bold">
+                            Giá trị thông số
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="mt-3">
+                    <a href="javascript:" class="page-btn btn-border-only click-add-spec">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Thêm thông số</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-content-box no-border d-flex justify-content-end mt-3">
+                
+                <button type="submit" class="form-submit-btn page-btn-sm btn-green">Tạo sản phẩm</button>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-lg-4 p-0 ps-lg-4">
+           
+            <div class="position-sticky top-0 start-0 mt-3 mt-lg-0">
+                <div class="page-content-box no-border">
+                    <div class="page-content-header">
+                        Nhóm sản phẩm
+                    </div>
+
+                    <span>Chức năng đang cập nhật...</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</form>
+
+@section Styles {
+    <link type="text/css" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/admin/css/product.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="~/admin/js/product.js"></script>
+}

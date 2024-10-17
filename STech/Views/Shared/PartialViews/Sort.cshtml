@@ -1,0 +1,66 @@
+﻿@{
+    var request = Context.Request;
+    Uri uri = new Uri($"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}");
+    string currentUrl = uri.AbsoluteUri;
+
+    string sortType = "";
+    switch(ViewBag.Sort)
+    {
+        case "random":
+            sortType = "Ngẫu nhiên";
+            break;
+        case "price-ascending":
+            sortType = "Giá tăng dần";
+            break;
+        case "price-descending":
+            sortType = "Giá giảm dần";
+            break;
+        case "name-az":
+            sortType = "Tên A-Z";
+            break;
+        case "name-za":
+            sortType = "Tên Z-A";
+            break;
+    }
+}
+
+
+<div class="sort-dropdown">
+    <button class="sort-dropdown-btn">
+        <i class="fa-solid fa-arrow-down-short-wide"></i>
+        Sắp xếp theo: <span id="sort-value">@sortType</span>
+    </button>
+    <div class="sort-dropdown-content">
+
+        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "sort", "random")">
+            <div class="sort-dropdown-content-item @( ViewBag.Sort == "random" ? "active" : "" )">
+                Ngẫu nhiên
+            </div>
+        </a>
+
+        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "sort", "price-ascending")">
+            <div class="sort-dropdown-content-item @( ViewBag.Sort == "price-ascending" ? "active" : "" )">
+                Giá tăng dần
+            </div>
+        </a>
+
+        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "sort", "price-descending")">
+            <div class="sort-dropdown-content-item @( ViewBag.Sort == "price-descending" ? "active" : "" )">
+                Giá giảm dần
+            </div>
+        </a>
+
+        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "sort", "name-az")">
+            <div class="sort-dropdown-content-item @( ViewBag.Sort == "name-az" ? "active" : "" )">
+                Tên A - Z
+            </div>
+        </a>
+
+        <a href="@UrlHelper.AddOrUpdateQueryParam(currentUrl, "sort", "name-za")">
+            <div class="sort-dropdown-content-item @( ViewBag.Sort == "name-za" ? "active" : "" )">
+                Name Z - A
+            </div>
+        </a>
+
+    </div>
+</div>

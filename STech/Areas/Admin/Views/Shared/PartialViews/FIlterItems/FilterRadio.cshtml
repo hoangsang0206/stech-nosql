@@ -1,0 +1,13 @@
+﻿@model Tuple<string, string, string, string> //id, name, value, label
+
+@{
+    string id = Model.Item1;
+    string name = Model.Item2;
+    string value = Model.Item3;
+    string label = Model.Item4;
+}
+
+<label for="@id" class="filter-content-item">
+    <span>@label</span>
+    <input type="radio" id="@id" value="@value" name="@name" hidden />
+</label>
