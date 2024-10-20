@@ -1,6 +1,6 @@
 ﻿@model ReviewReplyVM
 
-<form class="post-reply" data-review="@Model.ReviewId">
+<form class="post-reply" data-review="@Model.ReviewId" data-product="@Model.ProductId">
     <div>
         <textarea asp-for="@Model.Content" id="txt-reply" placeholder="Gửi phản hồi"></textarea>
         <span asp-validation-for="@Model.Content"></span>

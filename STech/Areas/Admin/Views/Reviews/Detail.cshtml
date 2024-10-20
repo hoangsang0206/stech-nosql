@@ -23,7 +23,14 @@
     <div class="row p-0 m-0">
         <div class="col-12 col-lg-8 p-0">
             <div class="page-content-box no-border">
-                @await Html.PartialAsync("PartialViews/Review_StarGroup", review.Rating)
+                <div class="d-flex gap-3 align-items-center">
+                    @await Html.PartialAsync("PartialViews/Review_StarGroup", review.Rating)
+                    <span>(@review.TotalLike lượt thích)</span>
+                </div>
+
+                <div class="mt-1">
+                    <span class="text-secondary" style="font-size: .85rem">@review.CreateAt.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
 
                 <div class="fweight-600 mt-3">
                     @review.Content
@@ -64,7 +71,8 @@
 
                     @await Html.PartialAsync("PartialViews/Form_ReviewReply", new ReviewReplyVM
                     {
-                        ReviewId = review.Id
+                        ReviewId = review.Id,
+                        ProductId = product?.ProductId ?? "",
                     })
 
                 </div>
@@ -136,8 +144,8 @@
                         <div class="d-flex gap-2">
                             <img src="@(product?.ProductImages.FirstOrDefault()?.ImageSrc ?? "/admin/images/no-image.jpg")" alt="" style="width: 4rem" />
 
-                            <div>
-                                <span class="text-product-name">@product?.ProductName</span>
+                            <div class="d-flex flex-column">
+                                <span class="text-product-name cursor-pointer" onclick="window.location.href='/admin/reviews/product/@product?.ProductId'">@product?.ProductName</span>
                                 <span class="text-price">@CurrencyFormatter.Format(product?.Price)</span>
                             </div>
                         </div>

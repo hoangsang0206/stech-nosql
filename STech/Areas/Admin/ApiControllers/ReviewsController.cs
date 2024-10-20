@@ -17,6 +17,8 @@ namespace STech.Areas.Admin.ApiControllers
         private readonly IAzureService _azureService;
         private readonly IUserService _userService;
 
+        private readonly int reviewsPerPage = 20;
+
         public ReviewsController(IReviewService reviewService, IAzureService azureService, IUserService userService)
         {
             _reviewService = reviewService;
@@ -25,7 +27,7 @@ namespace STech.Areas.Admin.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetReviews(string? search, string? sort_by, string? status, string? filter_by, int page = 1) {
+        public async Task<IActionResult> GetReviews(string? search, string? productId, string? sort_by, string? status, string? filter_by, int page = 1) {
 
             if (page <= 1)
             {
@@ -33,8 +35,10 @@ namespace STech.Areas.Admin.ApiControllers
             }
 
             var (reviews, totalPages) = search != null
-                ? await _reviewService.SearchReviewsWithProduct(search, 40, sort_by, status, filter_by, page)
-                : await _reviewService.GetReviewsWithProduct(40, sort_by, status, filter_by, page);
+                ? await _reviewService.SearchReviewsWithProduct(search, reviewsPerPage, sort_by, status, filter_by, page)
+                : productId != null 
+                ? await _reviewService.GetProductReviews(productId, reviewsPerPage, sort_by, status, filter_by, page)
+                : await _reviewService.GetReviewsWithProduct(reviewsPerPage, sort_by, status, filter_by, page);
 
             return Ok(new ApiResponse
             {

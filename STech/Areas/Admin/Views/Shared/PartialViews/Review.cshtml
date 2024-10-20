@@ -1,0 +1,86 @@
+﻿@model ReviewMVM
+
+<div class="review-item">
+    <div class="mb-1 d-flex gap-3 align-items-center justify-content-between">
+        <div class="d-flex gap-3 align-items-center">
+            @{
+                string reviewerName = Model.User?.FullName ?? Model.ReviewerName ?? "Không có tên";
+                string reviewerAvatar = Model.User?.Avatar ?? "/admin/images/user-no-image.svg";
+                int notReadCount = Model.ReviewReplies.Count(r => r.IsRead != true);
+
+                <div class="reviewer-avatar">
+                    <img src="@reviewerAvatar" style="width: 2rem" alt="" />
+                </div>
+
+                <span class="fweight-500">
+                    @reviewerName
+                </span>
+
+                @if (Model.IsPurchased == true)
+                {
+                    <span style="padding: .05rem .6rem" class="page-badge badge-success">Đã mua sản phẩm này</span>
+                }
+                else
+                {
+                    <span style="padding: .05rem .6rem" class="page-badge badge-warning">Chưa mua sản phẩm này</span>
+                }
+            }
+        </div>
+        <div>
+            <span style="font-size: .85rem" class="text-secondary">@Model.CreateAt.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+    </div>
+
+    <div class="ps-3" style="margin-left: 2rem">
+        <div class="d-flex gap-3 align-items-center">
+            @await Html.PartialAsync("PartialViews/Review_StarGroup", Model.Rating)
+
+            <span class="fweight-600">"@Model.Content"</span>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center justify-content-between mt-2">
+            <div>
+                <span style="font-size: .87rem">
+                    <span class="text-secondary">Đã đánh giá</span>
+                    <a class="text-decoration-none review-product-name" href="/admin/reviews/product/@Model.ProductId">@Model.Product?.ProductName</a>
+                </span>
+            </div>
+
+            <div class="d-flex gap-1 align-items-stretch">
+                <div class="d-flex align-items-center">
+                    <span class="me-3">(@Model.ReviewImages.Count() hình ảnh)</span>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <span class="me-3">(@Model.ReviewReplies.Count() phản hồi)</span>
+                </div>
+
+                <button class="page-btn btn-red delete-review" data-review="@Model.Id" data-product="@Model.ProductId">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+
+                <a href="/admin/reviews/1/@Model.Id" class="page-btn btn-blue view-review">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </a>
+
+                <button class="page-btn btn-lightblue view-review-replies position-relative" data-review="@Model.Id">
+                    <i class="fa-regular fa-comment-dots"></i>
+
+                    @if (notReadCount > 0)
+                    {
+                        <span class="review-replies-count position-absolute">
+                            @notReadCount
+                        </span>
+                    }
+                </button>
+
+                @if (Model.IsProceeded != true)
+                {
+                    <button class="page-btn btn-green approve-review" data-review="@Model.Id" data-product="@Model.ProductId">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

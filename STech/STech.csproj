@@ -100,7 +100,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
     <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
     <PackageReference Include="Stripe.net" Version="45.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />

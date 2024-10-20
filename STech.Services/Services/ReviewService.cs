@@ -10,9 +10,9 @@ namespace STech.Services.Services
     public class ReviewService : IReviewService
     {
         private readonly IMongoCollection<Product> _collection;
-        private readonly Lazy<IUserService> _userService;
+        private readonly IUserService _userService;
 
-        public ReviewService(StechDbContext context, Lazy<IUserService> userService)
+        public ReviewService(StechDbContext context, IUserService userService)
         {
             _collection = context.GetCollection<Product>("Products");
             _userService = userService;
@@ -42,7 +42,7 @@ namespace STech.Services.Services
             int remainingReviews = filteredCount - reviewsPerPage * (page > totalPages ? totalPages : page);
                 
             return (
-                reviews.Paginate(page, reviewsPerPage).Filter(filter_by).Sort(sort_by), 
+                reviews.Paginate(page, reviewsPerPage), 
                 overview,
                 totalPages,
                 totalReviews,
@@ -72,13 +72,41 @@ namespace STech.Services.Services
                 }
             }
 
-            reviews = reviews.Paginate(page, reviewsPerPage).Filter(filter_by).Sort(sort_by).ToList();
+            reviews = reviews.Filter(filter_by).Sort(sort_by).ToList();
 
             int totalReviews = reviews.Count();
             int totalPages = (int)Math.Ceiling((double)totalReviews / reviewsPerPage);
 
             return (
-                reviews,
+                reviews.Paginate(page, reviewsPerPage),
+                totalPages
+            );
+        }
+
+        public async Task<(IEnumerable<ReviewMVM>, int)> GetProductReviews(string productId, int reviewsPerPage, string? sort_by, string? status, string? filter_by, int page = 1)
+        {
+            Product product = await _collection.Find(p => p.ProductId == productId).FirstOrDefaultAsync();
+            IEnumerable<ReviewMVM> reviews = product.Reviews.SelectReviewWithProduct(product.ProductId, _userService, _collection);
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status == "approved")
+                {
+                    reviews = reviews.Where(r => r.IsProceeded == true).ToList();
+                }
+                else if (status == "not-approved")
+                {
+                    reviews = reviews.Where(r => r.IsProceeded != true).ToList();
+                }
+            }
+
+            reviews = reviews.Filter(filter_by).Sort(sort_by).ToList();
+
+            int totalReviews = reviews.Count();
+            int totalPages = (int)Math.Ceiling((double)totalReviews / reviewsPerPage);
+
+            return (
+                reviews.Paginate(page, reviewsPerPage),
                 totalPages
             );
         }
@@ -87,8 +115,15 @@ namespace STech.Services.Services
         {
             string[] keywords = query.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Or(
+                Builders<Product>.Filter.Eq(p => p.ProductId, query),
+                Builders<Product>.Filter.And(keywords.Select(key =>
+                    Builders<Product>.Filter.Regex(p => p.ProductName, new BsonRegularExpression(key, "i")))
+                )
+            );
+
             IEnumerable<Product> products = await _collection
-                .Find(p => p.Reviews.Count() > 0 && (p.ProductId == query || keywords.All(key => p.ProductName.Contains(key))))
+                .Find(filter)
                 .ToListAsync();
 
             List<ReviewMVM> reviews = new List<ReviewMVM>();
@@ -110,13 +145,13 @@ namespace STech.Services.Services
                 }
             }
 
-            reviews = reviews.Paginate(page, reviewsPerPage).Filter(filter_by).Sort(sort_by).ToList();
+            reviews = reviews.Filter(filter_by).Sort(sort_by).ToList();
 
             int totalReviews = reviews.Count();
             int totalPages = (int)Math.Ceiling((double)totalReviews / reviewsPerPage);
 
             return (
-                reviews,
+                reviews.Paginate(page, reviewsPerPage),
                 totalPages
             );
         }
@@ -176,7 +211,7 @@ namespace STech.Services.Services
                     ReviewId = rp.ReviewId,
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
-                    UserReply = rp.UserReplyId == null ? null : _userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReply,
                 })
                 .OrderBy(rp => rp.ReplyDate)
                 .ToList();
@@ -206,7 +241,7 @@ namespace STech.Services.Services
                     ReviewId = rp.ReviewId,
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
-                    UserReply = rp.UserReplyId == null ? null : _userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : _userService.GetUserById(rp.UserReplyId).Result,
                 })
                 .OrderBy(rp => rp.ReplyDate)
                 .ToList();

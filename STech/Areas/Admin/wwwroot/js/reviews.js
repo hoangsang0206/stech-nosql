@@ -22,6 +22,14 @@
 
 tippyButtons();
 
+$(document).ready(() => {
+    const btn_width = $('.reload-replies').outerWidth();
+    const element = $('.reply-review .review');
+    element.css('max-width', `calc(100% - ${btn_width}px)`);
+    element.css('padding-right', '1rem')
+    element.css('overflow', 'hidden')
+});
+
 $(document).on('click', '.approve-review', function () {
     showConfirmDialog('Phê duyệt đánh giá', 'Xác nhận duyệt đánh giá này?', () => {
         const review_id = $(this).data('review');
@@ -33,7 +41,7 @@ $(document).on('click', '.approve-review', function () {
             success: (response) => {
                 if (response.status) {
                     showDialogWithCallback('success', 'Đã phê duyệt đánh giá này', '', () => {
-                        loadReviews(1);
+                        loadReviews(parseInt($('.pagination-item.current').data('page') || '1'));
 
                         $(document).remove(this);
                     })
@@ -59,7 +67,7 @@ $(document).on('click', '.delete-review', function () {
             success: (response) => {
                 if (response.status) {
                     showDialogWithCallback('success', 'Xóa đánh giá thành công', '', () => {
-                        loadReviews(1);
+                        loadReviews(parseInt($('.pagination-item.current').data('page') || '1'));
                         $(document).remove(this);
                     })
                 } else {
@@ -178,6 +186,7 @@ const loadReviews = (page) => {
     const status = $('.status-selection .page-dropdown-btn').data('selected') || null;
     const filter_by = $('.filter-selection .page-dropdown-btn').data('selected') || null;
     const search = $('.search-reviews #search').val() || null;
+    const product_id = $('#ProductId').val() || null;
     showWebLoader();
 
     $.ajax({
@@ -185,6 +194,7 @@ const loadReviews = (page) => {
         url: `/api/admin/reviews`,
         data: {
             search: search,
+            productId: product_id,
             page: page,
             sort_by: sort_by,
             status: status,
@@ -205,6 +215,8 @@ const loadReviews = (page) => {
 
                 updateParams({
                     search: search,
+                    productId: product_id,
+                    page: page,
                     sort_by: sort_by,
                     status: status,
                     filter_by: filter_by
@@ -235,12 +247,12 @@ $(document).ready(() => {
 })
 
 $('.page-dropdown-item').not('.selected').click(() => {
-    loadReviews(1);
+    loadReviews(parseInt($('.pagination-item.current').data('page') || '1'));
 })
 
 $('.search-reviews').submit((e) => {
     e.preventDefault();
-    loadReviews(1);
+    loadReviews(parseInt($('.pagination-item.current').data('page') || '1'));
 })
 
 const markAllRepliesAsRead = (review_id, product_id) =>{
@@ -374,4 +386,17 @@ $('#txt-reply').focus(() => {
 
 $('.reload-replies').click(() => {
     showReviewReplies($('.post-reply').data('review'));
+})
+
+$(document).on('click', '.pagination-item:not(.current)', function () {
+    const page = $(this).data('page') || '1';
+    const current_page = parseInt($('.pagination-item.current').data('page') || '1');
+
+    if (page === 'next') {
+        loadReviews(current_page + 1);
+    } else if (page === 'previous') {
+        loadReviews(current_page - 1);
+    } else {
+        loadReviews(page);
+    }
 })

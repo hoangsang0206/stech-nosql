@@ -3,6 +3,7 @@ using STech.Data.Models;
 using STech.Data.MongoViewModels;
 using STech.Filters;
 using STech.Services;
+using System.Globalization;
 
 namespace STech.Areas.Admin.Controllers
 {
@@ -14,6 +15,8 @@ namespace STech.Areas.Admin.Controllers
         private readonly IReviewService _reviewService;
         private readonly IProductService _productService;
 
+        private readonly int reviewsPerPage = 20;
+
         public ReviewsController(IUserService userService, IReviewService reviewService, IProductService productService)
         {
             _userService = userService;
@@ -23,14 +26,14 @@ namespace STech.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index(string? search, string? sort_by, string? status, string? filter_by, int page = 1)
         {
-            if(page <= 1)
+            if(page < 1)
             {
                 page = 1;          
             }
 
             var (reviews, totalPages) = search != null 
-                ? await _reviewService.SearchReviewsWithProduct(search, 40, sort_by, status, filter_by, page)
-                : await _reviewService.GetReviewsWithProduct( 40, sort_by, status, filter_by, page);
+                ? await _reviewService.SearchReviewsWithProduct(search, reviewsPerPage, sort_by, status, filter_by, page)
+                : await _reviewService.GetReviewsWithProduct(reviewsPerPage, sort_by, status, filter_by, page);
 
             ViewBag.TotalPages = totalPages;
             ViewBag.CurrentPage = page;
@@ -56,17 +59,26 @@ namespace STech.Areas.Admin.Controllers
         }
 
         [Route("/admin/reviews/product/{pId}")]
-        public async Task<IActionResult> ProductReviews(string pId)
+        public async Task<IActionResult> ProductReviews(string pId, string? sort_by, string? status, string? filter_by, int page = 1)
         {
             ProductMVM? product = await _productService.GetProductWithBasicInfo(pId);
+            
             if(product == null)
             {
                 return LocalRedirect($"/admin/reviews?search={pId}");
             }
 
-            var (reviews, overview, totalPages, totalReviews, remainingReviews) = 
-                await _reviewService.GetReviews(pId, 40, 0, null, null, null);
+            if(page < 1)
+            {
+                page = 1;
+            }
 
+            var (reviews, totalPages) = await _reviewService.GetProductReviews(pId, reviewsPerPage, sort_by, status, filter_by, page);
+
+            ViewBag.TotalPages = totalPages;
+            ViewBag.CurrentPage = page;
+
+            ViewBag.ActiveSidebar = "reviews";
             return View(new Tuple<ProductMVM, IEnumerable<ReviewMVM>>(product, reviews));
         }
     }

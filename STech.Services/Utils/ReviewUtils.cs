@@ -7,7 +7,7 @@ namespace STech.Services.Utils
 {
     public static class ReviewUtils
     {
-        public static IEnumerable<ReviewMVM> SelectReview(this IEnumerable<Review> reviews, Lazy<IUserService> userService)
+        public static IEnumerable<ReviewMVM> SelectReview(this IEnumerable<Review> reviews, IUserService userService)
         {
             return reviews.Select(r => new ReviewMVM
             {
@@ -19,7 +19,7 @@ namespace STech.Services.Utils
                 TotalLike = r.TotalLike,
                 IsPurchased = r.IsPurchased,
                 IsProceeded = r.IsProceeded,
-                User = r.UserId == null ? null : userService.Value.GetUserById(r.UserId).Result,
+                User = r.UserId == null ? null : userService.GetUserById(r.UserId).Result,
                 ReviewImages = r.ReviewImages,
                 ReviewReplies = r.ReviewReplies.Select(rp => new ReviewReplyMVM
                 {
@@ -27,13 +27,13 @@ namespace STech.Services.Utils
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
                     IsRead = rp.IsRead,
-                    UserReply = rp.UserReplyId == null ? null : userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : userService.GetUserById(rp.UserReplyId).Result,
                 }).OrderBy(rp => rp.ReplyDate).ToList(),
             })
             .OrderByDescending(r => r.CreateAt);
         }
 
-        public static IEnumerable<ReviewMVM> SelectReviewDetail(this IEnumerable<Review> reviews, Lazy<IUserService> userService)
+        public static IEnumerable<ReviewMVM> SelectReviewDetail(this IEnumerable<Review> reviews, IUserService userService)
         {
             return reviews.Select(r => new ReviewMVM
             {
@@ -47,7 +47,7 @@ namespace STech.Services.Utils
                 TotalLike = r.TotalLike,
                 IsPurchased = r.IsPurchased,
                 IsProceeded = r.IsProceeded,
-                User = r.UserId == null ? null : userService.Value.GetUserById(r.UserId).Result,
+                User = r.UserId == null ? null : userService.GetUserById(r.UserId).Result,
                 ReviewImages = r.ReviewImages,
                 ReviewReplies = r.ReviewReplies.Select(rp => new ReviewReplyMVM
                 {
@@ -56,14 +56,14 @@ namespace STech.Services.Utils
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
                     IsRead = rp.IsRead,
-                    UserReply = rp.UserReplyId == null ? null : userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : userService.GetUserById(rp.UserReplyId).Result,
                 }).OrderBy(rp => rp.ReplyDate).ToList(),
             })
             .OrderByDescending(r => r.CreateAt);
         }
 
         public static IEnumerable<ReviewMVM> SelectReview(this IEnumerable<Review> reviews, 
-            Lazy<IUserService> userService, int numOfReplies)
+            IUserService userService, int numOfReplies)
         {
             return reviews.Select(r => new ReviewMVM
             {
@@ -75,7 +75,7 @@ namespace STech.Services.Utils
                 TotalLike = r.TotalLike,
                 IsPurchased = r.IsPurchased,
                 IsProceeded = r.IsProceeded,
-                User = r.UserId == null ? null : userService.Value.GetUserById(r.UserId).Result,
+                User = r.UserId == null ? null : userService.GetUserById(r.UserId).Result,
                 ReviewImages = r.ReviewImages,
                 ReviewReplies = r.ReviewReplies.Select(rp => new ReviewReplyMVM
                 {
@@ -83,14 +83,14 @@ namespace STech.Services.Utils
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
                     IsRead = rp.IsRead,
-                    UserReply = rp.UserReplyId == null ? null : userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : userService.GetUserById(rp.UserReplyId).Result,
                 }).Take(numOfReplies).OrderBy(rp => rp.ReplyDate).ToList(),
             })
             .OrderByDescending(r => r.CreateAt);
         }
 
         public static IEnumerable<ReviewMVM> SelectReview(this IEnumerable<Review> reviews, 
-            Lazy<IUserService> userService,
+            IUserService userService,
             int numOfReplies, string? userId)
         {
             return reviews.Select(r => new ReviewMVM
@@ -104,7 +104,7 @@ namespace STech.Services.Utils
                 IsPurchased = r.IsPurchased,
                 IsProceeded = r.IsProceeded,
                 IsLiked = r.ReviewLikes.Any(rl => rl.UserId == userId),
-                User = r.UserId == null ? null : userService.Value.GetUserById(r.UserId).Result,
+                User = r.UserId == null ? null : userService.GetUserById(r.UserId).Result,
                 ReviewImages = r.ReviewImages,
                 ReviewReplies = r.ReviewReplies.Select(rp => new ReviewReplyMVM
                 {
@@ -112,7 +112,7 @@ namespace STech.Services.Utils
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
                     IsRead = rp.IsRead,
-                    UserReply = rp.UserReplyId == null ? null : userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : userService.GetUserById(rp.UserReplyId).Result,
                 }).Take(numOfReplies).OrderBy(rp => rp.ReplyDate).ToList(),
             })
             .OrderByDescending(r => r.CreateAt);
@@ -120,7 +120,7 @@ namespace STech.Services.Utils
 
         public static IEnumerable<ReviewMVM> SelectReviewWithProduct(this IEnumerable<Review> reviews, 
             string productId,
-            Lazy<IUserService> userService,
+            IUserService userService,
             IMongoCollection<Product> collection)
         {
             return reviews.Select(r => new ReviewMVM
@@ -134,7 +134,7 @@ namespace STech.Services.Utils
                 TotalLike = r.TotalLike,
                 IsPurchased = r.IsPurchased,
                 IsProceeded = r.IsProceeded,
-                User = r.UserId == null ? null : userService.Value.GetUserById(r.UserId).Result,
+                User = r.UserId == null ? null : userService.GetUserById(r.UserId).Result,
                 ReviewImages = r.ReviewImages,
                 ReviewReplies = r.ReviewReplies.Select(rp => new ReviewReplyMVM
                 {
@@ -142,7 +142,7 @@ namespace STech.Services.Utils
                     Content = rp.Content,
                     ReplyDate = rp.ReplyDate,
                     IsRead = rp.IsRead,
-                    UserReply = rp.UserReplyId == null ? null : userService.Value.GetUserById(rp.UserReplyId).Result,
+                    UserReply = rp.UserReplyId == null ? null : userService.GetUserById(rp.UserReplyId).Result,
                 }).OrderBy(rp => rp.ReplyDate).ToList(),
                 Product = collection.Find(p => p.ProductId == productId).FirstOrDefaultAsync().Result,
             })
@@ -206,7 +206,7 @@ namespace STech.Services.Utils
                 case "most-liked":
                     return reviews.OrderByDescending(r => r.TotalLike);
                 default:
-                    return reviews;
+                    return reviews.OrderByDescending(r => r.CreateAt);
             }
         }
 

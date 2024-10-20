@@ -82,11 +82,13 @@ namespace STech.Services.Services
 
             string[] keywords = q.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            FilterDefinition<Product> filter = Builders<Product>.Filter.And(
-                Builders<Product>.Filter.Eq(p => p.IsActive, true),
-                Builders<Product>.Filter.And(keywords.Select(key =>
+            FilterDefinition<Product> filter = Builders<Product>.Filter.Or(
+                Builders<Product>.Filter.Eq(p => p.ProductId, q),
+                Builders<Product>.Filter.And(
+                    Builders<Product>.Filter.Eq(p => p.IsActive, true),
+                    Builders<Product>.Filter.And(keywords.Select(key =>
                     Builders<Product>.Filter.Regex(p => p.ProductName, new BsonRegularExpression(key, "i")))
-                )
+                ))
             );
 
             IEnumerable<Product> products = await _collection

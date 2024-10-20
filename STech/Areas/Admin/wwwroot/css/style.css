@@ -64,6 +64,8 @@
     --loader-color: var(--loader-color-light);
     --loader-color-light: #fff;
     --loader-color-dark: #000;
+
+    --rating-color: #ff8a00;
 }
 
 * {
@@ -921,7 +923,6 @@ button:disabled {
 }
 
 .text-overflow-1 {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;

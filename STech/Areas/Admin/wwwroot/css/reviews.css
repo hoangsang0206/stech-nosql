@@ -1,5 +1,5 @@
 ﻿.fa-star {
-    color: #ff8a00;
+    color: var(--rating-color);
 }
 
 .review-item {
@@ -12,11 +12,20 @@
     margin-top: .8rem;
 }
 
-.rating-star-group {
-    display: flex;
-    align-items: center;
-    gap: .3rem;
-}
+    .review-item .fweight-600
+    {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical
+    }
+
+    .rating-star-group {
+        display: flex;
+        align-items: center;
+        gap: .3rem;
+    }
 
 .reviewer-avatar img {
     width: 2rem;
@@ -70,3 +79,50 @@
     background: #f0f0f0;
     overflow-x: auto;
 }
+
+.rating-star-summary i {
+    font-size: 3rem;
+}
+
+.rating-star-summary span {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+
+.rating-summary-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .2rem;
+}
+
+.rating-star-group {
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+
+.rating-summary-item progress {
+    width: 15rem;
+    accent-color: var(--rating-color);
+    background-color: #e5e5e5;
+    height: 8px;
+    border-radius: 10px;
+    -webkit-appearance: none;
+}
+
+    .rating-summary-item progress::-webkit-progress-bar {
+        background-color: #e5e5e5;
+        border-radius: 10px;
+    }
+
+    .rating-summary-item progress::-webkit-progress-value {
+        background-color: var(--rating-color);
+        border-radius: 10px;
+    }
+
+    .rating-summary-item progress::-moz-progress-bar {
+        background-color: var(--rating-color);
+        border-radius: 10px;
+    }

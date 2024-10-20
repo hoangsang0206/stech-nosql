@@ -10,6 +10,7 @@ namespace STech.Services
         Task<(IEnumerable<ReviewMVM>, ReviewOverview, int, int, int)> GetApprovedReviews(string productId, int reviewsPerPage, int numOfReplies, string? sort_by, string? filter_by, string? current_user, int page = 1);
         Task<IEnumerable<ReviewMVM>> GetReviews(string productId, string? sort_by);
         Task<(IEnumerable<ReviewMVM>, int)> GetReviewsWithProduct(int reviewsPerPage, string? sort_by, string? status, string? filter_by, int page = 1);
+        Task<(IEnumerable<ReviewMVM>, int)> GetProductReviews(string productId, int reviewsPerPage, string? sort_by, string? status, string? filter_by, int page = 1);
         Task<(IEnumerable<ReviewMVM>, int)> SearchReviewsWithProduct(string query, int reviewsPerPage, string? sort_by, string? status, string? filter_by, int page = 1);
         Task<ReviewMVM?> GetReview(int reviewId);
         Task<(IEnumerable<ReviewReplyMVM>, int, int, int)> GetReviewReplies(int reviewId, int page, int repliesPerPage);
